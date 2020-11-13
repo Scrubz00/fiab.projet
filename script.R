@@ -68,4 +68,4 @@ survie <- function(lambda, beta, t){
 
 survie(20, 2, seq(0.1, 20, 0.1))
 plot(survie(20, 2, seq(0.1, 20, 0.1)), type = 'l')
-
+p
