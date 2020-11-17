@@ -1,3 +1,7 @@
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+
 # TP 1 
 
 ## Question 1
