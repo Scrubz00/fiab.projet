@@ -69,3 +69,44 @@ survie <- function(lambda, beta, t){
 survie(20, 2, seq(0.1, 20, 0.1))
 plot(survie(20, 2, seq(0.1, 20, 0.1)), type = 'l')
 
+
+# Question 5 
+# simulation d'une loi de weibull avec la méthode des quantile. 
+
+f_repar_weibull <- function(lambda, beta, x){
+  rep <- 1-exp(-(x/lambda)^beta)
+  return(rep)
+}
+
+f_repar_weibull(1,1,0:5)
+
+realisation_weibull<- function(lambda,beta,a){
+  
+  u=runif(1, min=0, max=1)
+  g=f_repar_weibull(lambda,beta,a) 
+  v=g>u
+  
+  for(i in 1:length(a)){
+    nb=i
+    if (v[i]==TRUE) { break }
+  }
+  
+  return(nb)
+}
+
+realisation_weibull(1,1,1:10)
+
+n_realisation_weibull<-function(n,lambda,beta,a){
+  vect=NULL
+  for(i in 1:n){
+    vect[i]=realisation_weibull(lambda,beta,a)
+  }
+  return(vect)
+}
+n_realisation_weibull(10,1,1,1:5)
+
+rweibull(10,1,1)
+
+x<- 0:10
+plot(f_repar_weibull(1,1,x),type = "l")
+plot(pweibull(x,1,1),type = "l")
