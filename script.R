@@ -9,16 +9,16 @@ phi <- function(x){
 
 # question 2
 
-phi_function <- function(lambda, beta, t){
-  R1 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R2 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R3 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R4 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R5 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R6 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R7 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R8 <- 1-pweibull(t, shape = beta, scale = lambda)
-  R9 <- 1-pweibull(t, shape = beta, scale = lambda)
+phi_function <- function(loi, lambda, beta, t){
+  R1 <- 1-loi(t, shape = beta, scale = lambda)
+  R2 <- 1-loi(t, shape = beta, scale = lambda)
+  R3 <- 1-loi(t, shape = beta, scale = lambda)
+  R4 <- 1-loi(t, shape = beta, scale = lambda)
+  R5 <- 1-loi(t, shape = beta, scale = lambda)
+  R6 <- 1-loi(t, shape = beta, scale = lambda)
+  R7 <- 1-loi(t, shape = beta, scale = lambda)
+  R8 <- 1-loi(t, shape = beta, scale = lambda)
+  R9 <- 1-loi(t, shape = beta, scale = lambda)
   rep <- ((R3[t]*(1-(1-R1[t])*(1-R2[t]))*(1-(1-R4[t])*(1-R5[t])))+(1-R3[t])*(1-(1-R1[t]*R4[t])*(1-R2[t]*R5[t])))*(1-(1-R6[t]*R7[t])*(1-R8[t])*(1-R9[t]))
   return(rep)
 }
@@ -28,7 +28,7 @@ phi_function <- function(lambda, beta, t){
 
 ## Question 3
 
-plot(phi_function(20,2, 0:35), type = 'l')
+plot(phi_function(pweibull, 20, 2, 0:35), type = 'l')
 
 ## Question 4
 
