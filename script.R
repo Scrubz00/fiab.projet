@@ -180,6 +180,19 @@ phi <- function(x){
 
 ## Exercice 2
 
+lambda = 5
+beta = 5
 t <- seq(0, 30, 0.1)
 X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
 S <- rep(0,length(t))
+u <- runif(10, 0, 1)
+
+for(i in 1:length(t)){
+  for(j in 1:10){
+    if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+      X[i,j] <- 1
+    }
+  }
+  S[i] <- phi(X[i,])
+}
+
