@@ -144,10 +144,42 @@ phi2 <- function(lambda, beta, a, n){
   
   for(i in 1:n){
     for(j in 1:9){
-      if(t[i] < -inverse_pweibull(lambda, beta, u)){
+      if(t[i] < inverse_pweibull(lambda, beta, u)){
         x[i,j] <- 1
       }
     }
     rep[i] <- phi(x[i,])
   }
 }
+
+# Question 6
+
+lambda <- 5
+beta <- 5
+
+t <- seq(0, 10, 0.1)
+
+R <- matrix(rep(0, length(t)*9), nrow = length(t), ncol = 9)
+S <- rep(0, length(t))
+
+for(i in 1:length(t)){
+  y <- 1 - pweibull(t[i], lambda, beta)
+  R[i,] <- rep(y, 9)
+  S[i] <- survie(lambda, beta, R[i,])
+}
+
+
+# Projet 2
+
+## Exercice 1
+
+phi <- function(x){
+  rep <- x[5]*x[6]*((1-(1-x[1]*x[3])(1-x[2]*x[4]))*(1-(1-x[7]*x[8])*(1-x[9]*x[10])))+(1-x[5]*x[6])((1-(1-x[1]*x[3]*x[7]*x[8])*(1-x[2]*x[4]*x[9]*x[10])))
+  return(rep)
+}
+
+## Exercice 2
+
+t <- seq(0, 30, 0.1)
+X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
+S <- rep(0,length(t))
