@@ -137,17 +137,26 @@ inverse_pweibull <- function(lambda, beta, u){
   return(rep)
 }
 
-phi2 <- function(lambda, beta, a, n){
-  u <- runif(9)
-  t <- seq(0, a, n)
+phi2 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(9,0,1)
   x <- matrix(0, nrow = n, ncol = 9)
   
   for(i in 1:n){
     for(j in 1:9){
-      if(t[i] < -inverse_pweibull(lambda, beta, u)){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
         x[i,j] <- 1
       }
     }
-    rep[i] <- phi(x[i,])
+    y[i] <- phi(x[i,])
   }
+  return(y)
 }
+phi2(4,20,2,1)
+plot(phi2(4,20,2,1),type="l")
+
+# question 6 
+
+# question 7
+
