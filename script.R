@@ -174,7 +174,7 @@ for(i in 1:length(t)){
 ## Exercice 1
 
 phi <- function(x){
-  rep <- x[5]*x[6]*((1-(1-x[1]*x[3])(1-x[2]*x[4]))*(1-(1-x[7]*x[8])*(1-x[9]*x[10])))+(1-x[5]*x[6])((1-(1-x[1]*x[3]*x[7]*x[8])*(1-x[2]*x[4]*x[9]*x[10])))
+  rep <- x[5]*x[6]*((1-(1-x[1]*x[3])*(1-x[2]*x[4]))*(1-(1-x[7]*x[8])*(1-x[9]*x[10])))+(1-x[5]*x[6])*((1-(1-x[1]*x[3]*x[7]*x[8])*(1-x[2]*x[4]*x[9]*x[10])))
   return(rep)
 }
 
@@ -183,16 +183,44 @@ phi <- function(x){
 lambda = 5
 beta = 5
 t <- seq(0, 30, 0.1)
-X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
-S <- rep(0,length(t))
-u <- runif(10, 0, 1)
 
-for(i in 1:length(t)){
-  for(j in 1:10){
-    if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
-      X[i,j] <- 1
+simu_etat_systeme <- function(lambda, beta, t){
+  X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
+  S <- rep(0,length(t))
+  u <- runif(10, 0, 1)
+  w <- rweibull(10, lambda, beta)
+  max <- max(t)
+  
+  for(i in 1:length(t)){
+    for(j in 1:10){
+      if(t[i] < w[j]){
+        X[i,j] <- 1
+      }
+    }
+    S[i] <- phi(X[i,])
+    if((S[i] == 0) && (S[i-1] == 1)){
+      max <- t[i]
     }
   }
-  S[i] <- phi(X[i,])
+  return(list(etat = S, last = max))
 }
 
+test <- simu_etat_systeme(lambda, beta, t)
+
+g <- ggplot() +
+  geom_line(aes(x = t, y = test[[1]])) +
+  labs(x = "t",
+       y = "etat")
+
+g
+
+# Esperance
+
+esperance_T <- function(n){
+  n <- 100
+  simu <- rep(-1, n)
+  for(i in 1:n){
+    simu[i] <- simu_etat_systeme(lambda, beta, t)[[2]]
+  }
+  return(mean(simu))
+}
