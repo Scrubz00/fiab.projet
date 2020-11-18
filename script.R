@@ -72,42 +72,114 @@ plot(survie(1000, 2, seq(0.1, 20, 0.1)), type = 'l')
 # Question 5 
 # simulation d'une loi de weibull avec la méthode des quantile. 
 
-f_repar_weibull <- function(lambda, beta, x){
- rep <- 1-exp(-(x/lambda)^beta)
- return(rep)
+
+# Question 5 
+
+inverse_pweibull <- function(lambda, beta, u){
+  rep <- lambda*(-(log(1-u)^(1/beta)))
+  return(rep)
 }
 
-f_repar_weibull(1,1,0:5)
-
-realisation_weibull<- function(lambda,beta,a){
+phi2 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(9,0,1)
+  x <- matrix(0, nrow = n, ncol = 9)
   
-  u=runif(1, min=0, max=1)
-  g=f_repar_weibull(lambda,beta,a) 
-  v=g>u
-
-    for(i in 1:length(a)){
-    nb=i
-    if (v[i]==TRUE) { break }
-    }
-
-  return(nb)
-}
-
-realisation_weibull(1,1,1:10)
-
-n_realisation_weibull<-function(n,lambda,beta,a){
-  vect=NULL
   for(i in 1:n){
-    vect[i]=realisation_weibull(lambda,beta,a)
+    for(j in 1:9){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+    y[i] <- phi(x[i,])
+  }
+  return(y)
+}
+phi2(4,20,2,1)
+plot(phi2(4,20,2,1),type="l")
+
+# question 6 
+
+phi23 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(9,0,1)
+  x <- matrix(0, nrow = n, ncol = 9)
+  for(i in 1:n){
+    for(j in 1:9){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+      
+    }
+    if (x[i,j]==0) { break }
+    
+  }
+  return(i-1)
+}
+phi23(4,36,2,1)
+
+# question 7
+
+n_realisation_T<-function(a, n, lambda, beta,ntot){
+  vect=NULL
+  for(i in 1:ntot){
+    vect[i]=phi23(a, n, lambda, beta)
   }
   return(vect)
 }
-n_realisation_weibull(10,1,1,1:5)
+n_realisation_T(4,36,2,1,40)
+sum(n_realisation_T(4,36,2,1,40))
 
-rweibull(10,1,1)
+mu=function(a, n, lambda, beta,ntot){
+  v=n_realisation_T(a, n, lambda, beta,ntot)
+  1/ntot*sum(v)
+}
+mu(4,36,2,1,40)
 
-x<- 0:10
-plot(f_repar_weibull(1,1,x),type = "l")
-plot(pweibull(x,1,1),type = "l")
-# Question 6 
-exp(1)
+######### 
+# Exercice 1
+
+phi <- function(x){
+  rep <- x[5]*x[6]*((1-(1-x[1]*x[3])*(1-x[2]*x[4]))*(1-(1-x[7]*x[8])*(1-x[9]*x[10])))+(1-x[5]*x[6])*((1-(1-x[1]*x[3]*x[7]*x[8])*(1-x[2]*x[4]*x[9]*x[10])))
+  return(rep)
+}
+phi(c(1,1,0,1,1,1,1,1,0,1))
+## Exercice 2
+
+lambda = 5
+beta = 5
+t <- seq(0, 30, 0.1)
+X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
+S <- rep(0,length(t))
+u <- runif(10, 0, 1)
+
+for(i in 1:length(t)){
+  for(j in 1:10){
+    if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+      X[i,j] <- 1
+    }
+  }
+  S[i] <- phi(X[i,])
+}
+
+# Exercice 3
+phi2 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  
+  for(i in 1:n){
+    for(j in 1:9){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+    y[i] <- phi(x[i,])
+  }
+  return(y)
+}
+phi2(4,20,10,1)
+plot(phi2(4,20,2,1),type="l")
