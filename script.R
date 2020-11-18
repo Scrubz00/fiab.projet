@@ -158,5 +158,41 @@ plot(phi2(4,20,2,1),type="l")
 
 # question 6 
 
+phi23 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(9,0,1)
+  x <- matrix(0, nrow = n, ncol = 9)
+  for(i in 1:n){
+    for(j in 1:9){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+      
+    }
+    if (x[i,j]==0) { break }
+    
+  }
+  return(i-1)
+}
+phi23(4,36,2,1)
+
 # question 7
 
+n_realisation_T<-function(a, n, lambda, beta,ntot){
+  vect=NULL
+  for(i in 1:ntot){
+    vect[i]=phi23(a, n, lambda, beta)
+  }
+  return(vect)
+}
+n_realisation_T(4,36,2,1,40)
+sum(n_realisation_T(4,36,2,1,40))
+
+mu=function(a, n, lambda, beta,ntot){
+  v=n_realisation_T(a, n, lambda, beta,ntot)
+  1/ntot*sum(v)
+  }
+mu(4,36,2,1,40)
+
+######### 
