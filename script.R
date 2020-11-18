@@ -196,3 +196,50 @@ mu=function(a, n, lambda, beta,ntot){
 mu(4,36,2,1,40)
 
 ######### 
+# Exercice 1
+
+phi <- function(x){
+  rep <- x[5]*x[6]*((1-(1-x[1]*x[3])*(1-x[2]*x[4]))*(1-(1-x[7]*x[8])*(1-x[9]*x[10])))+(1-x[5]*x[6])*((1-(1-x[1]*x[3]*x[7]*x[8])*(1-x[2]*x[4]*x[9]*x[10])))
+  return(rep)
+}
+phi(c(1,1,0,1,1,1,1,1,0,1))
+## Exercice 2
+
+lambda = 5
+beta = 5
+t <- seq(0, 30, 0.1)
+X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
+S <- rep(0,length(t))
+u <- runif(10, 0, 1)
+
+for(i in 1:length(t)){
+  for(j in 1:10){
+    if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+      X[i,j] <- 1
+    }
+  }
+  S[i] <- phi(X[i,])
+}
+
+# Exercice 3
+phi2 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  
+  for(i in 1:n){
+    for(j in 1:9){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+    y[i] <- phi(x[i,])
+  }
+  return(y)
+}
+phi2(4,20,10,1)
+plot(phi2(4,20,2,1),type="l")
+
+
+
