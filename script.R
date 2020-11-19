@@ -142,10 +142,11 @@ mu(4,36,2,1,40)
 # Exercice 1
 
 phi <- function(x){
-  rep <- x[5]*x[6]*((1-(1-x[1]*x[3])*(1-x[2]*x[4]))*(1-(1-x[7]*x[8])*(1-x[9]*x[10])))+(1-x[5]*x[6])*((1-(1-x[1]*x[3]*x[7]*x[8])*(1-x[2]*x[4]*x[9]*x[10])))
+  rep <- (1-x[5])*(1-(1-x[1]*x[3])*(1-x[2]*x[4]))*x[6]*(1-(1-x[7]*x[10])*(1-x[8]*x[9]))+x[5]*(1-(1-x[1])*(1-x[2]))*(1-(1-x[3])*(1-x[4]))*x[6]*(1-(1-x[7]*x[10])*(1-x[8]*x[9]))
   return(rep)
 }
-phi(c(1,1,0,1,1,1,1,1,0,1))
+phi(c(0,1,1,1,0,1,0,1,1,0))
+
 ## Exercice 2
 
 lambda = 5
@@ -172,7 +173,7 @@ phi2 <- function(a, n, lambda, beta){
   x <- matrix(0, nrow = n, ncol = 10)
   
   for(i in 1:n){
-    for(j in 1:9){
+    for(j in 1:10){
       if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
         x[i,j] <- 1
       }
@@ -182,4 +183,7 @@ phi2 <- function(a, n, lambda, beta){
   return(y)
 }
 phi2(4,20,10,1)
-plot(phi2(4,20,2,1),type="l")
+plot(phi2(4,20,10,1),type="l")
+seq(1,20,4)
+
+
