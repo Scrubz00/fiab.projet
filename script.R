@@ -226,3 +226,32 @@ esperance_T <- function(n){
   }
   return(mean(simu))
 }
+esperance_T(100)
+
+# Exercice 3
+
+a <- 10
+n <- 20
+lambda <- 5
+beta <- 5
+inter <- 5
+t <- seq(0, a, length.out = n + 1)
+phi2 <- function(a, n, lambda, beta, t, inter){
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  repar <- 
+  
+  for(i in 1:n){
+    for(j in 1:10){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+    if(t[i] %in% repar){
+      # reset la variable de weibull de x[6]
+    }
+    y[i] <- phi(x[i,])
+  }
+  return(y)
+}
