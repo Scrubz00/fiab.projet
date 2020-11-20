@@ -166,7 +166,9 @@ for(i in 1:length(t)){
 }
 
 # Exercice 3
-phi2 <- function(a, n, lambda, beta){
+u=seq(0, 4,length.out =40)
+u[1]<u[2]
+phi2 <- function(a, n, lambda, beta,inter){
   t <- seq(0, a,length.out =n)
   y <- rep(0,n)
   u <- runif(10,0,1)
@@ -178,12 +180,45 @@ phi2 <- function(a, n, lambda, beta){
         x[i,j] <- 1
       }
     }
+    
+    if(fonction_interval(n,inter,i)==1){ 
+      if(x[i,6]==0){
+        x[i,6]=1
+      }
+    }
+    
     y[i] <- phi(x[i,])
   }
   return(y)
 }
-phi2(4,20,10,1)
-plot(phi2(4,20,10,1),type="l")
-seq(1,20,4)
+(b=phi2(4,40,5,1,7))
+seq(1,40,7)
+plot(b,type="l")
+
+fonction_interval=function(n,inter,i){
+  t=NULL
+  d=NULL
+  for (v in seq(1,n,inter)) {
+    if(v==i){
+      t[v]=1
+    }
+    else{
+      t[v]=0
+    }
+  }
+  t=t[!is.na(t)]
+  t
+  w=sum(t)
+  if(w==0){
+    d=0
+  }
+  else{
+   d=1 
+  }
+  return(d)
+}
+
+fonction_interval(20,2,7)
+seq(1,20,2)
 
 
