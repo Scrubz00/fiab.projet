@@ -4,7 +4,7 @@ comment donner le dessin du systeme du projet
   2. rajouter manuellement sur le rapport en pdf (au début de la section du projet ou en annexe)
   3. l'envoyer en pièce jointe à coté du rapport
   
-vérifier les graph (titre, nom d'axe, etc...)
+vérifier les graph (titre, nom d'axe, etc...) + virer les plots normaux (pas ggplot)
 
 TP2 ?
 
