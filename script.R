@@ -356,10 +356,21 @@ phi3 <- function(a, n, lambda, beta,inter){
   return(y)
 }
 
+a <- 20
+n <- 20
+lambda <- 15
+beta <- 3
+inter <- 7
 
-(s=phi3(20,20,15,3,7))
-plot(s,type = "l")
+(s=phi3(a,n,lambda,beta,inter))
 
+g <- ggplot() +
+  geom_line(aes(x = seq(0, a, length.out = n), y = phi3(a,n,lambda,beta,inter))) +
+  labs(title = "état du système avec réparation du composant 6",
+    x = "temps",
+    y = "état du système")
+
+g
 #  b
 
 #---   E(T)  ------------------------------------------------------
