@@ -225,7 +225,6 @@ phi2 <- function(a, n, lambda, beta,inter){
     return(x)
 }
 (b=phi2(20,20,10,15,4))
-plot(b,type="l")
 
 phi3 <- function(a, n, lambda, beta,inter){
   y=NULL
@@ -236,6 +235,124 @@ phi3 <- function(a, n, lambda, beta,inter){
   return(y)
 }
 
+
 (s=phi3(20,20,15,3,7))
 plot(s,type = "l")
 
+#  b
+
+#---   E(T)  ------------------------------------------------------
+
+tp_i_de_panne <- function(a, n, lambda, beta,inter){
+  y=NULL
+  d=0
+  matrice=phi2(a, n, lambda, beta,inter)
+  for (i in 1:n) {
+    y[i]=phi(matrice[i,]) 
+  }
+  for (i in n:1){
+    if(y[i]==1 & i==n ){
+      d=n
+      break
+    }
+    if(y[i]==1){
+      d=i+1
+      break
+    }
+  }
+#  if(d==n){
+#    return("Pas de panne sur le temps T")
+#  }
+#  if(d<n & d>0){
+#    return(d)
+#  }
+return(d)
+}
+tp_i_de_panne(20,20,15,3,7)
+
+nbtot_realisation_t=function(a, n, lambda, beta,inter,nbtot){
+  vector=NULL
+  for(i in 1:nbtot){
+    vector[i]=tp_i_de_panne(a, n, lambda, beta,inter)
+  }
+  return(vector)
+}
+
+nbtot_realisation_t(20,20,15,3,7,8)
+
+E_T=function(a, n, lambda, beta,inter,nbtot){
+  t=nbtot_realisation_t(a, n, lambda, beta,inter,nbtot)
+  moyenne=(1/nbtot)*sum(t)
+  return(moyenne)
+}
+E_T(20,20,15,3,7,8)
+
+#---   E(N)  ------------------------------------------------------
+
+nb_intervention <- function(a, n, lambda, beta,inter){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  
+  for(i in 1:n){
+    for(j in c(1,2,3,4,5,7,8,9,10)){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+  }
+  d=0
+  intervention=0
+  for(i in 1:n){
+    if(t[i-d] < (lambda*(-log(u[6]))^(1/beta))){
+      x[i,6] <- 1
+    }
+    if(fonction_interval(n,inter,i)==1 & x[i,6]==0){ 
+      intervention=intervention+1
+      d=i-1
+      u <- runif(10,0,1)
+    }
+  }
+  return(intervention)
+}
+nb_intervention(20,20,15,3,7)
+
+
+nb_realisation_intervention=function(a, n, lambda, beta,inter,nbtot){
+  vector=NULL
+  for(i in 1:nbtot){
+    vector[i]=nb_intervention(a, n, lambda, beta,inter)
+  }
+  return(vector)
+}
+
+nb_realisation_intervention(20,20,15,3,7,7)
+
+moyenne_intervention=function(a, n, lambda, beta,inter,nbtot){
+  moyenne=(1/nbtot)*sum(nb_realisation_intervention(a, n, lambda, beta,inter,nbtot))
+  return(moyenne)
+}
+
+moyenne_intervention(20,20,15,3,7,7)
+
+recompense<-function(a, n, lambda, beta,inter,nbtot,cout,gain){
+ r=gain*E_T(a, n, lambda, beta,inter,nbtot)-cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
+ return(r)
+}
+recompense(20,20,15,3,3,7,2,3.5)
+
+a_val=20
+n_val=20
+lambda_val=15
+beta_val=3
+nbtot_val=7
+cout_val=2
+gain_val=3.5
+
+recompense<-function(a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,inter,nbtot=nbtot_val,cout=cout_val,gain=gain_val){
+  r=gain*E_T(a, n, lambda, beta,inter,nbtot)-cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
+  return(r)
+}
+recompense(2)
+solution=optimize(recompense,c(0, 20),maximum = TRUE)
