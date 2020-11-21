@@ -212,7 +212,7 @@ simu_etat_systeme <- function(lambda, beta, t){
     }
     S[i] <- phi(X[i,])
     if((S[i] == 0) && (S[i-1] == 1)){
-      max <- t[i]
+      max <- t[i - 1]
     }
   }
   return(list(etat = S, last = max))
@@ -338,8 +338,8 @@ phi2 <- function(a, n, lambda, beta,inter){
       x[i,6] <- 1
     }
     if(fonction_interval(n,inter,i)==1 & x[i,6]==0){ 
-      d=i-1
-      u <- runif(10,0,1)
+      d <- i
+      u[6] <- runif(1,0,1)
     }
   }
   # y[i] <- phi(x[i,])
