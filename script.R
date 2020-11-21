@@ -166,35 +166,10 @@ for(i in 1:length(t)){
 }
 
 # Exercice 3
-u=seq(0, 4,length.out =40)
-u[1]<u[2]
-phi2 <- function(a, n, lambda, beta,inter){
-  t <- seq(0, a,length.out =n)
-  y <- rep(0,n)
-  u <- runif(10,0,1)
-  x <- matrix(0, nrow = n, ncol = 10)
-  
-  for(i in 1:n){
-    for(j in 1:10){
-      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
-        x[i,j] <- 1
-      }
-    }
-    
-    if(fonction_interval(n,inter,i)==1){ 
-      if(x[i,6]==0){
-        x[i,6]=1
-      }
-    }
-    
-    y[i] <- phi(x[i,])
-  }
-  return(y)
-}
-(b=phi2(4,40,5,1,7))
-seq(1,40,7)
-plot(b,type="l")
+#  a
 
+u=seq(0, 4,length.out =40)
+# ----------------------------------------------------------------------------#
 fonction_interval=function(n,inter,i){
   t=NULL
   d=NULL
@@ -213,7 +188,7 @@ fonction_interval=function(n,inter,i){
     d=0
   }
   else{
-   d=1 
+    d=1 
   }
   return(d)
 }
@@ -221,4 +196,46 @@ fonction_interval=function(n,inter,i){
 fonction_interval(20,2,7)
 seq(1,20,2)
 
+#---------------------------------------------------------------------------#
+
+phi2 <- function(a, n, lambda, beta,inter){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  
+  for(i in 1:n){
+    for(j in c(1,2,3,4,5,7,8,9,10)){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+  }
+  d=0
+  for(i in 1:n){
+     if(t[i-d] < (lambda*(-log(u[6]))^(1/beta))){
+       x[i,6] <- 1
+     }
+     if(fonction_interval(n,inter,i)==1 & x[i,6]==0){ 
+       d=i-1
+       u <- runif(10,0,1)
+     }
+    }
+  # y[i] <- phi(x[i,])
+    return(x)
+}
+(b=phi2(20,20,10,15,4))
+plot(b,type="l")
+
+phi3 <- function(a, n, lambda, beta,inter){
+  y=NULL
+  matrice=phi2(a, n, lambda, beta,inter)
+  for (i in 1:n) {
+   y[i]=phi(matrice[i,]) 
+  }
+  return(y)
+}
+
+(s=phi3(20,20,15,3,7))
+plot(s,type = "l")
 
