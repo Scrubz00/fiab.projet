@@ -227,6 +227,7 @@ int.ech = function(vector,conf.level=0.95,na.rm=T) { # VERSION 2016
   intervalle = t_student * sqrt(s/n) 
   moyenne = mean(vector,na.rm=na.rm) ; return(intervalle) }} 
 int.ech(moy)
+x = c(1,4,3,5,3) ; int.ech(x)
 
 # Exercice 3
 #  a
