@@ -490,3 +490,4 @@ recompense<-function(a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,inter,nb
 }
 recompense(2)
 solution=optimize(recompense,c(0, 20),maximum = TRUE)
+solution
