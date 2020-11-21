@@ -481,7 +481,7 @@ n_val <- 20
 lambda_val <- 15
 beta_val <- 3
 nbtot_val <- 7
-cout_val <- 500
+cout_val <- 100
 gain_val <- 250
 
 recompense<-function(a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,inter,nbtot=nbtot_val,cout=cout_val,gain=gain_val){
@@ -491,3 +491,8 @@ recompense<-function(a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,inter,nb
 recompense(2)
 solution=optimize(recompense,c(0, 20),maximum = TRUE)
 solution
+
+for(i in 1:n){
+  y[i] <- recompense(i)
+}
+plot(y)
