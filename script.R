@@ -216,7 +216,7 @@ g <- ggplot() +
 
 g
 
-# Esperance
+# Simulation
 
 simu_T <- function(n){
   n <- 100
@@ -226,8 +226,6 @@ simu_T <- function(n){
   }
   return(simu)
 }
-
-# Simulation
 
 n <- 100
 simu <- simu_T(n)
