@@ -123,29 +123,158 @@ n_realisation_weibull<-function(n,lambda,beta,a){
 }
 n_realisation_weibull(10,1,1,1:5)
 
-rweibull(10,1,1)
-
 x<- 0:10
 plot(f_repar_weibull(1,1,x),type = "l")
 plot(pweibull(x,1,1),type = "l")
 
+g <- ggplot() +
+  geom_line(aes(x = x, y = f_repar_weibull(1,1,x))) +
+  labs(y = "y")
+
+g
 
 # Question 5 
 
-inverse_pweibull <- function(lambda, beta, u){
-  rep <- lambda*(-(log(1-u)^(1/beta)))
+# inverse_pweibull <- function(lambda, beta, u){
+#   rep <- lambda*(-(log(1-u)^(1/beta)))
+#   return(rep)
+# }
+# 
+# phi2 <- function(lambda, beta, a, n){
+#   u <- runif(9)
+#   t <- seq(0, a, n)
+#   x <- matrix(0, nrow = n, ncol = 9)
+#   
+#   for(i in 1:n){
+#     for(j in 1:9){
+#       if(t[i] < inverse_pweibull(lambda, beta, u)){
+#         x[i,j] <- 1
+#       }
+#     }
+#     rep[i] <- phi(x[i,])
+#   }
+# }
+
+# Question 6
+
+lambda <- 5
+beta <- 5
+
+t <- seq(0, 10, 0.1)
+
+R <- matrix(rep(0, length(t)*9), nrow = length(t), ncol = 9)
+S <- rep(0, length(t))
+
+for(i in 1:length(t)){
+  y <- 1 - pweibull(t[i], lambda, beta)
+  R[i,] <- rep(y, 9)
+  S[i] <- survie(lambda, beta, R[i,])
+}
+
+
+# Projet 2
+
+## Exercice 1
+
+phi <- function(x){
+  rep <- (x[5]*((1-(1-x[1])*(1-x[2]))*(1-(1-x[3])*(1-x[4])))+(1-x[5])*(1-(1-x[1]*x[3])*(1-x[2]*x[4])))*x[6]*(1-(1-x[7]*x[10])*(1-x[8]*x[9]))
   return(rep)
 }
 
+<<<<<<< HEAD
 phi2 <- function(a, n, lambda, beta){
   t <- seq(0, a,length.out =n)
   y <- rep(0,n)
   u <- runif(9,0,1)
   x <- matrix(0, nrow = n, ncol = 9)
+=======
+
+
+## Exercice 2
+
+lambda = 5
+beta = 5
+t <- seq(0, 30, 0.1)
+
+simu_etat_systeme <- function(lambda, beta, t){
+  X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
+  S <- rep(0,length(t))
+  u <- runif(10, 0, 1)
+  w <- rweibull(10, lambda, beta)
+  max <- max(t)
+>>>>>>> younes
   
+  for(i in 1:length(t)){
+    for(j in 1:10){
+      if(t[i] < w[j]){
+        X[i,j] <- 1
+      }
+    }
+    S[i] <- phi(X[i,])
+    if((S[i] == 0) && (S[i-1] == 1)){
+      max <- t[i]
+    }
+  }
+  return(list(etat = S, last = max))
+}
+
+test <- simu_etat_systeme(lambda, beta, t)
+
+g <- ggplot() +
+  geom_line(aes(x = t, y = test[[1]])) +
+  labs(x = "t",
+       y = "etat")
+
+g
+
+# Simulation
+
+simu_T <- function(n){
+  n <- 100
+  simu <- rep(-1, n)
   for(i in 1:n){
+<<<<<<< HEAD
     for(j in 1:9){
       if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+=======
+    simu[i] <- simu_etat_systeme(lambda, beta, t)[[2]]
+  }
+  return(simu)
+}
+
+n <- 100
+simu <- simu_T(n)
+
+esperance <- mean(simu)
+
+confint <- c(mean(simu) - 1.96 * sd(simu)/sqrt(n), mean(simu) + 1.96 * sd(simu)/sqrt(n))
+
+# Exercice 3
+
+a <- 10
+n <- 100
+lambda <- 5
+beta <- 5
+inter <- 5
+t <- seq(0, a, length.out = n + 1)
+
+phi2 <- function(a, n, lambda, beta, t, inter){
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  p <- a/n*(1:n)*inter # p : vecteur qui contient les différents moments ou le méchanicien remet en marche la composante x[6]
+  # p ne donne pas ce que je veux
+  w <- rweibull(10, lambda, beta)
+  
+  for(i in 1:length(t)){
+    for(j in 1:10){
+      if(j == 6){
+        if(t[i] %in% p){
+          w[j] <- w[j] + t[i]
+        }
+      }
+      if(t[i] < w[j]){
+>>>>>>> younes
         x[i,j] <- 1
       }
     }
@@ -153,6 +282,7 @@ phi2 <- function(a, n, lambda, beta){
   }
   return(y)
 }
+<<<<<<< HEAD
 phi2(4,20,2,1)
 plot(phi2(4,20,2,1),type="l")
 
@@ -243,3 +373,6 @@ plot(phi2(4,20,2,1),type="l")
 
 
 
+=======
+# la fonction ne compile pas
+>>>>>>> younes
