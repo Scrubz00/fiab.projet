@@ -9,3 +9,5 @@ vérifier les graph (titre, nom d'axe, etc...) + virer les plots normaux (pas gg
 TP2 ?
 
 Projet question 2 : peut être montrer l'évolution de la moyenne des simulations par rapport au nombre de simulation ? idem pour les intervalles de confiance ?
+
+Voir si le temps de vie d'un systeme correspond au dernier état de fonctionnement ou au premier état de non fonctionnement
