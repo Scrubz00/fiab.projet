@@ -427,10 +427,12 @@ nb_intervention <- function(a, n, lambda, beta,inter){
     if(t[i-d] < (lambda*(-log(u[6]))^(1/beta))){
       x[i,6] <- 1
     }
-    if(fonction_interval(n,inter,i)==1 & x[i,6]==0){ 
-      intervention=intervention+1
-      d=i-1
-      u <- runif(10,0,1)
+    if(fonction_interval(n,inter,i)==1){
+      intervention <- intervention + 1
+      if(x[i,6] == 0){
+        d <- i
+        u[6] <- runif(1,0,1)
+      }
     }
   }
   return(intervention)
