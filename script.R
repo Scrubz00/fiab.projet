@@ -461,13 +461,13 @@ recompense<-function(a, n, lambda, beta,inter,nbtot,cout,gain){
 }
 recompense(20,20,15,3,3,7,2,3.5)
 
-a_val=20
-n_val=20
-lambda_val=15
-beta_val=3
-nbtot_val=7
-cout_val=2
-gain_val=3.5
+a_val <- 20
+n_val <- 20
+lambda_val <- 15
+beta_val <- 3
+nbtot_val <- 7
+cout_val <- 500
+gain_val <- 250
 
 recompense<-function(a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,inter,nbtot=nbtot_val,cout=cout_val,gain=gain_val){
   r=gain*E_T(a, n, lambda, beta,inter,nbtot)-cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
