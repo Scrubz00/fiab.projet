@@ -470,29 +470,32 @@ moyenne_intervention=function(a, n, lambda, beta,inter,nbtot){
 
 moyenne_intervention(20,20,15,3,7,7)
 
-recompense<-function(a, n, lambda, beta,inter,nbtot,cout,gain){
-  r=gain*E_T(a, n, lambda, beta,inter,nbtot)-cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
-  return(r)
-}
+# recompense<-function(a, n, lambda, beta,inter,nbtot,cout,gain){
+#   r=gain*E_T(a, n, lambda, beta,inter,nbtot)-cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
+#   return(r)
+# }
 recompense(20,20,15,3,3,7,2,3.5)
 
-a_val <- 20
-n_val <- 20
+a_val <- 200
+n_val <- 200
 lambda_val <- 15
 beta_val <- 3
-nbtot_val <- 7
+nbtot_val <- 100
 cout_val <- 100
 gain_val <- 250
 
-recompense<-function(a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,inter,nbtot=nbtot_val,cout=cout_val,gain=gain_val){
-  r=gain*E_T(a, n, lambda, beta,inter,nbtot)-cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
+recompense<-function(inter, a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,nbtot=nbtot_val,cout=cout_val,gain=gain_val){
+  gain_moyen <- gain*E_T(a, n, lambda, beta,inter,nbtot)
+  cout_moyen <- cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
+  r <- gain_moyen - cout_moyen
   return(r)
 }
 recompense(2)
-solution=optimize(recompense,c(0, 20),maximum = TRUE)
+solution=optimize(recompense,c(0, 200),maximum = TRUE)
 solution
 
 for(i in 1:n){
   y[i] <- recompense(i)
 }
 plot(y)
+
