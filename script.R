@@ -218,15 +218,23 @@ g
 
 # Esperance
 
-esperance_T <- function(n){
+simu_T <- function(n){
   n <- 100
   simu <- rep(-1, n)
   for(i in 1:n){
     simu[i] <- simu_etat_systeme(lambda, beta, t)[[2]]
   }
-  return(mean(simu))
+  return(simu)
 }
-esperance_T(100)
+
+# Simulation
+
+n <- 100
+simu <- simu_T(n)
+
+esperance <- mean(simu)
+
+confint <- c(mean(simu) - 1.96 * sd(simu)/sqrt(n), mean(simu) + 1.96 * sd(simu)/sqrt(n))
 
 # Exercice 3
 
