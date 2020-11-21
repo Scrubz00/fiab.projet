@@ -184,16 +184,14 @@ mu(4,36,2,1,40)
 
 # Projet 2
 
-# code younes
-
-## Exercice 1
+## Question 1
 
 phi <- function(x){
   rep <- (x[5]*((1-(1-x[1])*(1-x[2]))*(1-(1-x[3])*(1-x[4])))+(1-x[5])*(1-(1-x[1]*x[3])*(1-x[2]*x[4])))*x[6]*(1-(1-x[7]*x[10])*(1-x[8]*x[9]))
   return(rep)
 }
 
-## Exercice 2
+# Question 2
 
 lambda = 5
 beta = 5
@@ -247,38 +245,42 @@ esperance <- mean(simu)
 
 confint <- c(mean(simu) - 1.96 * sd(simu)/sqrt(n), mean(simu) + 1.96 * sd(simu)/sqrt(n))
 
+# code younes
+
+
+
 # Exercice 3
 
-a <- 10
-n <- 100
-lambda <- 5
-beta <- 5
-inter <- 5
-t <- seq(0, a, length.out = n + 1)
-
-phi2 <- function(a, n, lambda, beta, t, inter){
-  y <- rep(0,n)
-  u <- runif(10,0,1)
-  x <- matrix(0, nrow = n, ncol = 10)
-  p <- a/n*(1:n)*inter # p : vecteur qui contient les différents moments ou le méchanicien remet en marche la composante x[6]
-  # p ne donne pas ce que je veux
-  w <- rweibull(10, lambda, beta)
-  
-  for(i in 1:length(t)){
-    for(j in 1:10){
-      if(j == 6){
-        if(t[i] %in% p){
-          w[j] <- w[j] + t[i]
-        }
-      }
-      if(t[i] < w[j]){
-        x[i,j] <- 1
-      }
-    }
-    y[i] <- phi(x[i,])
-  }
-  return(y)
-}
+# a <- 10
+# n <- 100
+# lambda <- 5
+# beta <- 5
+# inter <- 5
+# t <- seq(0, a, length.out = n + 1)
+# 
+# phi2 <- function(a, n, lambda, beta, t, inter){
+#   y <- rep(0,n)
+#   u <- runif(10,0,1)
+#   x <- matrix(0, nrow = n, ncol = 10)
+#   p <- a/n*(1:n)*inter # p : vecteur qui contient les différents moments ou le méchanicien remet en marche la composante x[6]
+#   # p ne donne pas ce que je veux
+#   w <- rweibull(10, lambda, beta)
+#   
+#   for(i in 1:length(t)){
+#     for(j in 1:10){
+#       if(j == 6){
+#         if(t[i] %in% p){
+#           w[j] <- w[j] + t[i]
+#         }
+#       }
+#       if(t[i] < w[j]){
+#         x[i,j] <- 1
+#       }
+#     }
+#     y[i] <- phi(x[i,])
+#   }
+#   return(y)
+# }
 # la fonction ne compile pas
 
 
