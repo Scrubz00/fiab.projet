@@ -281,7 +281,7 @@ phi2 <- function(a, n, lambda, beta,inter){
        x[i,6] <- 1
      }
      if(fonction_interval(n,inter,i)==1 & x[i,6]==0){ 
-       d=i-1
+       d=i
        u <- runif(10,0,1)
      }
     }
@@ -372,9 +372,9 @@ nb_intervention <- function(a, n, lambda, beta,inter){
     if(t[i-d] < (lambda*(-log(u[6]))^(1/beta))){
       x[i,6] <- 1
     }
-    if(fonction_interval(n,inter,i)==1 & x[i,6]==0){ 
+    if(fonction_interval(n,inter,i)==1 & x[i,6]==0){
       intervention=intervention+1
-      d=i-1
+      d=i
       u <- runif(10,0,1)
     }
   }
@@ -418,5 +418,7 @@ recompense<-function(a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,inter,nb
   r=gain*E_T(a, n, lambda, beta,inter,nbtot)-cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
   return(r)
 }
-recompense(2)
+x=seq(1,20,length.out = 20)
+plot()
+plot(x,recompense(x))
 solution=optimize(recompense,c(0, 20),maximum = TRUE)
