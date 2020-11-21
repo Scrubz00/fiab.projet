@@ -149,21 +149,84 @@ phi(c(0,1,1,1,0,1,0,1,1,0))
 
 ## Exercice 2
 
-lambda = 5
-beta = 5
-t <- seq(0, 30, 0.1)
-X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
-S <- rep(0,length(t))
-u <- runif(10, 0, 1)
 
-for(i in 1:length(t)){
-  for(j in 1:10){
-    if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
-      X[i,j] <- 1
+phi2 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  
+  for(i in 1:n){
+    for(j in 1:10){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
     }
+    y[i] <- phi(x[i,])
   }
-  S[i] <- phi(X[i,])
+  return(y)
 }
+phi2(4,20,2,1)
+plot(phi2(4,20,2,1),type="l")
+
+# question 6 
+
+phi23 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  for(i in 1:n){
+    for(j in 1:10){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+      
+    }
+    y[i] <- phi(x[i,])
+    if (y[i]==0) { break }
+    
+  }
+  return(i-1)
+}
+phi23(4,36,2,1)
+
+# question 7
+
+n_realisation_T<-function(a, n, lambda, beta,ntot){
+  vect=NULL
+  for(i in 1:ntot){
+    vect[i]=phi23(a, n, lambda, beta)
+  }
+  return(vect)
+}
+n_realisation_T(4,36,2,1,40)
+sum(n_realisation_T(4,36,2,1,40))
+
+mu=function(a, n, lambda, beta,ntot){
+  v=n_realisation_T(a, n, lambda, beta,ntot)
+  1/ntot*sum(v)
+}
+mu(4,36,2,1,40)
+
+n_rea_mu=function(a, n, lambda, beta,ntot,nmu){
+  v=NULL
+  for (i in 1:nmu) {
+  v[i]=  mu(a, n, lambda, beta,ntot)
+  }
+  return(v)
+}
+
+moy= n_rea_mu(4,36,2,1,40,100)
+int.ech = function(vector,conf.level=0.95,na.rm=T) { # VERSION 2016 
+  if (length(vector)==0) { cat("Erreur ! Le vecteur ",substitute(vector),"est vide.\n")} 
+  else { s = var(vector,na.rm=na.rm) 
+  n = length(vector)-sum(is.na(vector)) 
+  ddl = n - 1 ; proba = (1-conf.level)*100 ; proba = (100-proba/2)/100 
+  t_student = qt(proba, ddl) # quantile 
+  intervalle = t_student * sqrt(s/n) 
+  moyenne = mean(vector,na.rm=na.rm) ; return(intervalle) }} 
+int.ech(moy)
 
 # Exercice 3
 #  a
