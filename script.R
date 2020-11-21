@@ -123,34 +123,37 @@ n_realisation_weibull<-function(n,lambda,beta,a){
 }
 n_realisation_weibull(10,1,1,1:5)
 
-rweibull(10,1,1)
-
 x<- 0:10
 plot(f_repar_weibull(1,1,x),type = "l")
 plot(pweibull(x,1,1),type = "l")
 
+g <- ggplot() +
+  geom_line(aes(x = x, y = f_repar_weibull(1,1,x))) +
+  labs(y = "y")
+
+g
 
 # Question 5 
 
-inverse_pweibull <- function(lambda, beta, u){
-  rep <- lambda*(-(log(1-u)^(1/beta)))
-  return(rep)
-}
-
-phi2 <- function(lambda, beta, a, n){
-  u <- runif(9)
-  t <- seq(0, a, n)
-  x <- matrix(0, nrow = n, ncol = 9)
-  
-  for(i in 1:n){
-    for(j in 1:9){
-      if(t[i] < inverse_pweibull(lambda, beta, u)){
-        x[i,j] <- 1
-      }
-    }
-    rep[i] <- phi(x[i,])
-  }
-}
+# inverse_pweibull <- function(lambda, beta, u){
+#   rep <- lambda*(-(log(1-u)^(1/beta)))
+#   return(rep)
+# }
+# 
+# phi2 <- function(lambda, beta, a, n){
+#   u <- runif(9)
+#   t <- seq(0, a, n)
+#   x <- matrix(0, nrow = n, ncol = 9)
+#   
+#   for(i in 1:n){
+#     for(j in 1:9){
+#       if(t[i] < inverse_pweibull(lambda, beta, u)){
+#         x[i,j] <- 1
+#       }
+#     }
+#     rep[i] <- phi(x[i,])
+#   }
+# }
 
 # Question 6
 
