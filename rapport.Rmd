@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(ggplot2)
 library(zoo)
+library(magrittr)
 ```
 
 
@@ -58,6 +59,13 @@ simu_etat_systeme <- function(lambda, beta, t){
 
 La trajectoire du système est :
 
+g2 <- df %>% 
+  ggplot() +
+  geom_line(aes(x = t, y = systeme, col = num_systeme)) +
+  facet_grid(num_systeme ~ .)
+g2
+
+
 ```{r}
 lambda <- 5
 beta <- 5
@@ -67,23 +75,25 @@ set.seed(1)
 systeme1 <- simu_etat_systeme(lambda, beta, t)
 systeme2 <- simu_etat_systeme(lambda, beta, t)
 systeme3 <- simu_etat_systeme(lambda, beta, t)
+df1 <- data.frame(systeme = c(systeme1[[1]], systeme2[[1]], systeme3[[1]]),
+                  num_systeme = c(rep("systeme 1",length(t)), rep("systeme 2",length(t)), rep("systeme 3",length(t))),
+                  t = rep(t, 3))
 
-g <- ggplot() +
-  geom_line(aes(x = t, y = systeme1[[1]]), col = "blue") +
-  geom_line(aes(x = t, y = systeme2[[1]]), col = "red") +
-  geom_line(aes(x = t, y = systeme3[[1]]), col = "green") +
-  labs(x = "t",
-       y = "etat")
-
-g
-systeme1[[2]]
-systeme2[[2]]
-systeme3[[2]]
+g1 <- df1 %>% 
+  ggplot() +
+  geom_line(aes(x = t, y = systeme, col = num_systeme)) +
+  labs(title = "simulation état du système",
+       x = "temps",
+       y = "état") +
+  scale_y_continuous(breaks = c(0, 1), minor_breaks = c(0,1)) +
+  scale_x_continuous(breaks = seq(0, 20, 5), minor_breaks = seq(0, 20, 1)) +
+  facet_grid(num_systeme ~ .)
+g1
 ```
 
 En fixant les paramètres à $\lambda = 5$ et $\beta = 5$, le premier système a une durée de vie de t = 3,8, le deuxième de t = 4 et le troisième de t = 4.8.
 
-On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 1000 système.
+On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 1000 systèmes.
 
 ```{r}
 simu_T <- function(n){
@@ -95,7 +105,7 @@ simu_T <- function(n){
 }
 
 set.seed(1)
-n <- 1000
+n <- 10000
 simu <- simu_T(n)
 
 esperance <- mean(simu)
@@ -106,4 +116,219 @@ esperance
 confint
 ```
 
-On estime le temps de vie moyen de notre système à 4.078. Son intervalle de confiance associé à 95% est $[4,039;4,117]$.
+On estime le temps de vie moyen de notre système à 3,933. Son intervalle de confiance à 95% est $[3,920;3.946]$.
+
+```{r}
+nb.simu <- matrix(1:n, n, 1)
+esp.cumul <- cumsum(simu)/nb.simu
+df.si <- data.frame(nb.simu, esp.cumul)
+ggplot(df.si,aes(x=nb.simu, y=esp.cumul))+
+ geom_line()+
+ xlab("Nombre simulations")+
+ ylab("Moyenne des estimations")
+```
+
+
+## Question 3
+
+Le composant critique que nous avons choisis est le composant $x_6$. En effet, il est un composant critique car il est en série avec tout le reste du système et donc une panne de ce composant entraine forcément une panne du système.
+Nous allons maintenant implémenter le fait que ce composant soit réparable. On part du principe qu'un technicien vient tous les intervalles de temps  $\delta$ pour le réparer : si le composant est en panne, il le répare, sinon il ne fait rien. Dans les deux cas, le déplacement du technicien implique un coût.
+
+```{r}
+fonction_interval=function(n,inter,i){
+  t=NULL
+  d=NULL
+  for (v in seq(1,n,inter)) {
+    if(v==i){
+      t[v]=1
+    }
+    else{
+      t[v]=0
+    }
+  }
+  t=t[!is.na(t)]
+  w=sum(t)
+  if(w==0){
+    d=0
+  }
+  else{
+    d=1 
+  }
+  return(d)
+}
+
+phi2 <- function(a, n, lambda, beta,inter){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  
+  for(i in 1:n){
+    for(j in c(1,2,3,4,5,7,8,9,10)){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+  }
+  d=0
+  for(i in 1:n){
+    if(t[i-d] < (lambda*(-log(u[6]))^(1/beta))){
+      x[i,6] <- 1
+    }
+    if(fonction_interval(n,inter,i)==1 & x[i,6]==0){ 
+      d <- i
+      u[6] <- runif(1,0,1)
+    }
+  }
+  # y[i] <- phi(x[i,])
+  return(x)
+}
+
+phi3 <- function(a, n, lambda, beta,inter){
+  y=NULL
+  matrice=phi2(a, n, lambda, beta,inter)
+  for (i in 1:n) {
+    y[i]=phi(matrice[i,]) 
+  }
+  return(y)
+}
+```
+
+Nous allons tracer quelques trajectoire de l'état notre nouveau système réparable. Cette fois-ci, on fixe $\lambda = 15$ et $\beta = 3$.
+
+```{r}
+a <- 20
+n <- 20
+lambda <- 15
+beta <- 3
+inter <- 4
+
+set.seed(10560)
+df2 <- data.frame(systeme = c(phi3(a,n,lambda,beta,inter), phi3(a,n,lambda,beta,inter), phi3(a,n,lambda,beta,inter)),
+                  num_systeme = c(rep("systeme 1",n), rep("systeme 2",n), rep("systeme 3",n)),
+                  t = rep(seq(0, a, length.out = n), 3))
+
+g2 <- df2 %>% 
+  ggplot() +
+  geom_line(aes(x = t, y = systeme, col = num_systeme)) +
+  labs(title = "état du système réparable",
+       x = "temps",
+       y = "état") +
+  scale_y_continuous(breaks = c(0, 1), minor_breaks = c(0,1)) +
+  scale_x_continuous(breaks = seq(0, 20, 5), minor_breaks = seq(0, 20, 1)) +
+  facet_grid(num_systeme ~ .)
+g2
+```
+
+Pour la première trajectoire, on voit que le système tombe en panne au temps t = 10 et il n'y a pas de réparation ensuite, du moins pas de réparation qui remette le système en marche.
+Pour la deuxième trajectoire, on voit que le système tombe une première fois en panne au temps t = 7, puis il y a réparation au temps t = 9, puis le système retombe en panne au temps t = 13. On peut donc dire que la réparation du composant critique a permis au système de tenir un peu plus longtemps que prévu (il a gagné t = 4 de durée de vie).
+Pour le troisième système, on remarque qu'il tombe une première fois en panne et qu'il est réparé en même temps que le système 2 (aux temps t = 7 puis t = 9), seulement ce système met plus de temps que le précédent à retomber en panne (il retombe en panne à t = 16 contre t = 13 pour le précédent). Dans ce système, le fait que le composant critique soit réparable a doublé la durée de vie de notre système (il passe d'une durée de vie de 6 à 12).
+
+Nous allons maintenant regarder avec quel intervalle de temps $\delta$ il faut demander au technicien d'intervenir pour que le système soit le plus rentable possible. La fonction de récompense est la suivante : $$R(\delta) = a \mathbb{E}(T) - C \mathbb{E}(N) $$.
+Le coefficients $a$ correspond au gain du système associé au temps, et le coefficient $C$ correspond au coût d'intervention du technicien. $N$ est le nombre moyen d'intervention du technicien avant l'instant T de panne du système.
+
+On implémente cette fonction, puis on cherche à la maximiser par rapport à $\delta$. Comme précédemment les valeurs de $\mathbb{E}(T)$ et $\mathbb{E}(N)$ sont estimées par la loi des grands nombres.
+
+```{r}
+# Esperance de T
+tp_i_de_panne <- function(a, n, lambda, beta,inter){
+  y=NULL
+  d=0
+  matrice=phi2(a, n, lambda, beta,inter)
+  for (i in 1:n) {
+    y[i]=phi(matrice[i,]) 
+  }
+  for (i in n:1){
+    if(y[i]==1 & i==n ){
+      d=n
+      break
+    }
+    if(y[i]==1){
+      d=i+1
+      break
+    }
+  }
+  return(d)
+}
+
+nbtot_realisation_t=function(a, n, lambda, beta,inter,nbtot){
+  vector=NULL
+  for(i in 1:nbtot){
+    vector[i]=tp_i_de_panne(a, n, lambda, beta,inter)
+  }
+  return(vector)
+}
+
+E_T=function(a, n, lambda, beta,inter,nbtot){
+  t=nbtot_realisation_t(a, n, lambda, beta,inter,nbtot)
+  moyenne=(1/nbtot)*sum(t)
+  return(moyenne)
+}
+```
+```{r}
+# Esperance de N
+nb_intervention <- function(a, n, lambda, beta,inter){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(10,0,1)
+  x <- matrix(0, nrow = n, ncol = 10)
+  
+  for(i in 1:n){
+    for(j in c(1,2,3,4,5,7,8,9,10)){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+  }
+  d=0
+  intervention=0
+  for(i in 1:n){
+    if(t[i-d] < (lambda*(-log(u[6]))^(1/beta))){
+      x[i,6] <- 1
+    }
+    if(fonction_interval(n,inter,i)==1){
+      intervention <- intervention + 1
+      if(x[i,6] == 0){
+        d <- i
+        u[6] <- runif(1,0,1)
+      }
+    }
+  }
+  return(intervention)
+}
+
+nb_realisation_intervention=function(a, n, lambda, beta,inter,nbtot){
+  vector=NULL
+  for(i in 1:nbtot){
+    vector[i]=nb_intervention(a, n, lambda, beta,inter)
+  }
+  return(vector)
+}
+
+moyenne_intervention=function(a, n, lambda, beta,inter,nbtot){
+  moyenne=(1/nbtot)*sum(nb_realisation_intervention(a, n, lambda, beta,inter,nbtot))
+  return(moyenne)
+}
+```
+Pour la maximisation, on va fixer reprendre les paramètres utilisés précédemment : on fixe $\lambda = 15$, $\beta = 3$. Pour les coefficients de gain associé au temps et de cout d'intervention du technicien, on les fixe arbitrairement : on fixe $a = 250$ et $C = 100$.
+```{r}
+# Fonction récompense
+a_val <- 200
+n_val <- 200
+lambda_val <- 15
+beta_val <- 3
+nbtot_val <- 100
+cout_val <- 100
+gain_val <- 250
+
+set.seed(1)
+recompense<-function(inter, a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,nbtot=nbtot_val,cout=cout_val,gain=gain_val){
+  gain_moyen <- gain*E_T(a, n, lambda, beta,inter,nbtot)
+  cout_moyen <- cout*moyenne_intervention(a, n, lambda, beta,inter,nbtot)
+  r <- gain_moyen - cout_moyen
+  return(r)
+}
+solution=optimize(recompense,c(0, 200),maximum = TRUE)
+solution
+```
+
