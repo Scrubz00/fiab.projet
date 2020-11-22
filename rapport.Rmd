@@ -7,9 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r}
+library(ggplot2)
+library(zoo)
+```
+
+
 # Projet
-
-
 
 Dans cette partie nous allons traiter du projet 2. Il consiste à simuler un système complexe et avec un composant réparable.
 
@@ -69,14 +73,12 @@ g <- ggplot() +
   geom_line(aes(x = t, y = systeme2[[1]]), col = "red") +
   geom_line(aes(x = t, y = systeme3[[1]]), col = "green") +
   labs(x = "t",
-       y = "etat") +
-  
+       y = "etat")
 
 g
 systeme1[[2]]
 systeme2[[2]]
 systeme3[[2]]
-"a"
 ```
 
 En fixant les paramètres à $\lambda = 5$ et $\beta = 5$, le premier système a une durée de vie de t = 3,8, le deuxième de t = 4 et le troisième de t = 4.8.
@@ -85,7 +87,6 @@ On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de
 
 ```{r}
 simu_T <- function(n){
-  n <- 100
   simu <- rep(-1, n)
   for(i in 1:n){
     simu[i] <- simu_etat_systeme(lambda, beta, t)[[2]]
