@@ -1,0 +1,397 @@
+---
+title: "fiabilité"
+author: "camille"
+date: "21/11/2020"
+output: pdf_document
+---
+\newpage
+
+```{r setup, include=FALSE}
+library(magrittr)
+library(dplyr)
+library(ggplot2)
+library(pander)
+library(knitr)
+```
+
+\begin{center}
+\includegraphics{C:/Users/Camille/Desktop/fiab.projet/b1}
+\end{center}
+
+```{r block_1}
+phi_1 <- function(x){
+  rep <- ((x[3]*(1-(1-x[1])*(1-x[2]))*(1-(1-x[4])*(1-x[5])))+(1-x[3])*(1-(1-x[1]*x[4])*
+            (1-x[2]*x[5])))
+  return(rep)
+}
+```
+
+```{r }
+phi_1(c(0,0,1,1,1))
+```
+
+```{r }
+phi_1(c(1,0,0,1,0))
+```
+\begin{center}
+\includegraphics{C:/Users/Camille/Desktop/fiab.projet/b2}
+\end{center}
+
+```{r }
+phi_2 <- function(x){
+  rep <- (1-(1-x[1]*x[2])*(1-x[3])*(1-x[4]))
+  return(rep)
+}
+```
+
+```{r }
+phi_2(c(1,0,0,0))
+```
+
+```{r }
+phi_2(c(0,0,1,0))
+```
+
+\begin{center}
+\includegraphics{C:/Users/Camille/Desktop/fiab.projet/s}
+\end{center}
+
+```{r }
+phi <- function(x){
+  rep <- ((x[3]*(1-(1-x[1])*(1-x[2]))*(1-(1-x[4])*(1-x[5])))+(1-x[3])*
+            (1-(1-x[1]*x[4])*(1-x[2]*x[5])))*(1-(1-x[6]*x[7])*(1-x[8])*(1-x[9]))
+  return(rep)
+}
+```
+
+```{r}
+phi(c(1,0,0,0,1,1,1,1,1))
+```
+
+```{r }
+phi(c(1,1,0,0,1,1,1,1,1))
+```
+
+
+```{r}
+survie_sys <- function(loi, lambda, beta, t){
+  R1 <- 1-loi(t, shape = beta, scale = lambda)
+  R2 <- 1-loi(t, shape = beta, scale = lambda)
+  R3 <- 1-loi(t, shape = beta, scale = lambda)
+  R4 <- 1-loi(t, shape = beta, scale = lambda)
+  R5 <- 1-loi(t, shape = beta, scale = lambda)
+  R6 <- 1-loi(t, shape = beta, scale = lambda)
+  R7 <- 1-loi(t, shape = beta, scale = lambda)
+  R8 <- 1-loi(t, shape = beta, scale = lambda)
+  R9 <- 1-loi(t, shape = beta, scale = lambda)
+  rep <- ((R3[t]*(1-(1-R1[t])*(1-R2[t]))*(1-(1-R4[t])*(1-R5[t])))+(1-R3[t])*
+            (1-(1-R1[t]*R4[t])*(1-R2[t]*R5[t])))*(1-(1-R6[t]*R7[t])*
+                (1-R8[t])*(1-R9[t]))
+  return(rep)
+}
+
+
+```
+
+```{r}
+g <- ggplot() +
+  geom_line(aes(x = 1:35, y = survie_sys(pweibull, 20, 2, 0:35))) +
+  labs(title = "survie du système",
+       x = "temps",
+       y = "proba de survie")
+
+g
+```
+
+```{r}
+
+ln_surv <- function(lambda, beta, t){
+  rep=NULL
+  for(i in 1:length(t)){
+    R1 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R2 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R3 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R4 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R5 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R6 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R7 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R8 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    R9 <- 1-pweibull(t[i], shape = beta, scale = lambda)
+    rep[i] <- -log(((R3*(1-(1-R1)*(1-R2))*(1-(1-R4)*(1-R5)))+(1-R3)*
+                  (1-(1-R1*R4)*(1-R2*R5)))*(1-(1-R6*R7)*(1-R8)*
+                    (1-R9)))/t[i]
+  }
+  return(rep)
+}
+
+t= seq(0.1, 20, 0.1)
+lambda=20
+beta=2
+#ln_surv(lambda,beta,t)
+```
+
+```{r}
+
+g <- ggplot() +
+  geom_line(aes(x = seq(0.1, 20, 0.1), y = ln_surv(20, 2, seq(0.1, 20, 0.1)))) +
+  labs(x = "t",
+       y = "-ln(F(t))/t")
+
+g
+```
+
+```{r}
+phi_t <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(9,0,1)
+  x <- matrix(0, nrow = n, ncol = 9)
+  
+  for(i in 1:n){
+    for(j in 1:9){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+    y[i] <- phi(x[i,])
+  }
+  return(y)
+}
+
+# phi_t(4,20,2,1)
+
+```
+
+```{r}
+
+g <- ggplot() +
+  geom_line(aes(x = 1:20, y = phi_t(4,20,2,1))) +
+  labs(y = "y")
+g
+```
+
+```{r}
+duree_vie_sys <- function(a, n, lambda, beta){
+  y<-phi_t(a, n, lambda, beta)
+  d<-0
+  for (i in n:1){
+    if(y[i]==1 & i==n ){
+      d=n
+      break
+    }
+    if(y[i]==1){
+      d=i+1
+      break
+    }
+  }
+  return(d)
+}
+```
+
+```{r}
+duree_vie_sys(4,36,2,1)
+```
+
+```{r}
+phi_t_b1 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(5,0,1)
+  x <- matrix(0, nrow = n, ncol = 5)
+  
+  for(i in 1:n){
+    for(j in 1:5){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+    y[i] <- phi_1(x[i,])
+  }
+  return(y)
+}
+
+# phi_t_b1(4,20,2,1)
+
+```
+
+
+```{r}
+duree_vie_b1 <- function(a, n, lambda, beta){
+  y<-phi_t_b1(a, n, lambda, beta)
+  d<-0
+  for (i in n:1){
+    if(y[i]==1 & i==n ){
+      d=n
+      break
+    }
+    if(y[i]==1){
+      d=i+1
+      break
+    }
+  }
+  return(d)
+}
+```
+
+```{r}
+duree_vie_b1(4,36,2,1)
+```
+
+```{r}
+phi_t_b2 <- function(a, n, lambda, beta){
+  t <- seq(0, a,length.out =n)
+  y <- rep(0,n)
+  u <- runif(4,0,1)
+  x <- matrix(0, nrow = n, ncol = 4)
+  
+  for(i in 1:n){
+    for(j in 1:4){
+      if(t[i] < (lambda*(-log(u[j]))^(1/beta))){
+        x[i,j] <- 1
+      }
+    }
+    y[i] <- phi_2(x[i,])
+  }
+  return(y)
+}
+
+# phi_t_b1(4,20,2,1)
+
+```
+
+```{r}
+duree_vie_b1(4,36,2,1)
+```
+
+
+
+```{r}
+duree_vie_b2 <- function(a, n, lambda, beta){
+  y<-phi_t_b2(a, n, lambda, beta)
+  d<-0
+  for (i in n:1){
+    if(y[i]==1 & i==n ){
+      d=n
+      break
+    }
+    if(y[i]==1){
+      d=i+1
+      break
+    }
+  }
+  return(d)
+}
+```
+
+```{r}
+n_realisation_T_sys<-function(a, n, lambda, beta,ntot){
+  vect=NULL
+  for(i in 1:ntot){
+    vect[i]=duree_vie_sys(a, n, lambda, beta)
+  }
+  return(vect)
+}
+
+mu=function(a, n, lambda, beta,ntot){
+  v=n_realisation_T_sys(a, n, lambda, beta,ntot)
+  1/ntot*sum(v)
+}
+mu(4,36,2,1,40)
+```
+
+```{r}
+n_realisation_T_b1<-function(a, n, lambda, beta,ntot){
+  vect=NULL
+  for(i in 1:ntot){
+    vect[i]=duree_vie_b1(a, n, lambda, beta)
+  }
+  return(vect)
+}
+
+mu_1=function(a, n, lambda, beta,ntot){
+  v=n_realisation_T_b1(a, n, lambda, beta,ntot)
+  1/ntot*sum(v)
+}
+mu_1(4,36,2,1,40)
+```
+
+```{r}
+n_realisation_T_b2<-function(a, n, lambda, beta,ntot){
+  vect=NULL
+  for(i in 1:ntot){
+    vect[i]=duree_vie_b2(a, n, lambda, beta)
+  }
+  return(vect)
+}
+
+mu_2=function(a, n, lambda, beta,ntot){
+  v=n_realisation_T_b2(a, n, lambda, beta,ntot)
+  1/ntot*sum(v)
+}
+mu_2(4,36,2,1,40)
+```
+
+```{r}
+
+a_val=20
+n_val=20
+lambda_val=2
+ntot_val=200
+
+inegalite_booleen=function(beta,a=a_val, n=n_val, lambda=lambda_val,ntot=ntot_val){
+  rep=NULL
+  mu1=NULL
+  mu2=NULL
+  mu0=NULL
+  s=NULL
+  for(i in 1:length(beta)){
+  mu1[i]=mu_1(a, n, lambda, beta[i],ntot)
+  mu2[i]=mu_2(a, n, lambda, beta[i],ntot)
+  mu0[i]=mu(a, n, lambda, beta[i],ntot)
+  s[i]=((1/mu1[i])+(1/mu2[i]))^(-1)
+  if(mu0[i]>=s[i]){
+    
+    rep[i]=TRUE
+  }
+  else{
+    rep[i]=FALSE
+  }
+  }
+  return(rep)
+}
+
+```
+
+```{r}
+plot(inegalite_booleen(1:100))
+```
+
+```{r}
+
+a_val=20
+n_val=20
+lambda_val=2
+ntot_val=200
+
+inegalite=function(beta,a=a_val, n=n_val, lambda=lambda_val,ntot=ntot_val){
+  rep=NULL
+  mu1=NULL
+  mu2=NULL
+  mu0=NULL
+  s=NULL
+  for(i in 1:length(beta)){
+  mu1[i]=mu_1(a, n, lambda, beta[i],ntot)
+  mu2[i]=mu_2(a, n, lambda, beta[i],ntot)
+  mu0[i]=mu(a, n, lambda, beta[i],ntot)
+  s[i]=((1/mu1[i])+(1/mu2[i]))^(-1)
+  rep[i]=mu0[i]-s[i]
+  }
+  return(rep)
+}
+
+```
+
+```{r}
+plot(inegalite(1:100))
+```
+
