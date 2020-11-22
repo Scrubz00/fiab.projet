@@ -16,7 +16,7 @@ library(magrittr)
 
 # Projet
 
-Dans cette partie nous allons traiter du projet 2. Il consiste à simuler un système complexe et avec un composant réparable.
+Dans cette partie nous allons traiter du projet 2. Il consiste à simuler un système complexe avec un composant réparable.
 
 ## Question 1
 
@@ -89,7 +89,7 @@ g1
 
 En fixant les paramètres à $\lambda = 5$ et $\beta = 5$, le premier système a une durée de vie de t = 3,8, le deuxième de t = 4 et le troisième de t = 4.8.
 
-On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 1000 systèmes.
+On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 10000 systèmes.
 
 ```{r}
 simu_T <- function(n){
@@ -329,6 +329,37 @@ recompense<-function(inter, a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,n
 solution <- optimize(recompense,c(0, 200),maximum = TRUE)
 solution
 ```
+
+Lorsqu'on cherche à maximiser la fonction de récompense, on obtient qu'il faut que le technicien intervienne tous les 78 temps pour avoir un résultat optimal, et ce pour une récompense de 2807.
+Lorsque qu'on regarde l'évolution de la fonction recompense en fonction de $\delta$, on obtient :
+
+```{r}
+a_val <- 50
+n_val <- 50
+lambda_val <- 15
+beta_val <- 3
+nbtot_val <- 100
+cout_val <- 100
+gain_val <- 250
+
+set.seed(1)
+value <- 0
+for(i in 1:50){
+  value[i] <- recompense(i)
+}
+
+df3 <- data.frame(value,
+                  t = seq(0, a_val, length.out = n_val))
+
+g3 <- df3 %>% 
+  ggplot() +
+  geom_line(aes(x = t, y = value)) +
+  labs(title = "fonction de récompense",
+       x = "delta",
+       y = "récompense")
+g3
+```
+Ici on se limite à $\delta$ allant de 1 à 50 pour limiter le temps de compilation. On voit sur le graphe que la fonction optimisation a une allure croissante : plus l'intervalle de temps entre deux intervention du technicien est élevée (donc moins on demande au technicien d'intervenir), plus la récompense est élevée. On en déduit donc que l'intervention du technicien n'est pas rentable en vue de notre système.
 
 # Code
 
@@ -604,3 +635,28 @@ recompense<-function(inter, a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,n
 }
 solution <- optimize(recompense,c(0, 200),maximum = TRUE)
 solution
+
+a_val <- 50
+n_val <- 50
+lambda_val <- 15
+beta_val <- 3
+nbtot_val <- 100
+cout_val <- 100
+gain_val <- 250
+
+set.seed(1)
+value <- 0
+for(i in 1:50){
+  value[i] <- recompense(i)
+}
+
+df3 <- data.frame(value,
+                  t = seq(0, a_val, length.out = n_val))
+
+g3 <- df3 %>% 
+  ggplot() +
+  geom_line(aes(x = t, y = value)) +
+  labs(title = "fonction de récompense",
+       x = "delta",
+       y = "récompense")
+g3
