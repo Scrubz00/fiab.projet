@@ -915,9 +915,9 @@ Ainsi, $\mu \geq \left(  \frac{1}{\mu_1}+\frac{1}{\mu_2}\right)^{-1}$ n'est pas 
 
 # Conclusion
 
-Ce projet est intéressant dans le sens où on a mis en pratique des connaissances que nous avions aquerit theoriquement cette année.   
-On a pu visualiser comment évolue les risques, durée de survie d'un système en fonction de différents paramètres de la modélisation. 
-La partie informatique dans ce projet est assez importante, il faut implémenter beaucoup de fonctions. Nous avons remarquer que le coté financier  peut évoluer considérablement en fonction des risques de défaillance. Il est très important de trouver un bon compromis entre le cout de la main d'oeuvre pour réparer un composant et le gain que peut obtenir une indistrie sur une période fixé.
+Ce projet est intéressant dans le sens où on a mis en pratique des connaissances que nous avions aquis theoriquement cette année.   
+On a pu visualiser comment évoluent les risques, durée de survie d'un système en fonction de différents paramètres de la modélisation. 
+La partie informatique dans ce projet est assez importante, il faut implémenter beaucoup de fonctions. Nous avons remarquer que le coté financier peut évoluer considérablement en fonction des risques de défaillance. Il est très important de trouver un bon compromis entre le cout de la main d'oeuvre pour réparer un composant et le gain que peut obtenir une industrie sur une période fixée.
 
 
 # Annexe
