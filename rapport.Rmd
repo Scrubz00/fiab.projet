@@ -1,0 +1,108 @@
+---
+title: "rapport"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Projet
+
+
+
+Dans cette partie nous allons traiter du projet 2. Il consiste à simuler un système complexe et avec un composant réparable.
+
+## Question 1
+
+Le système que nous allons simuler a 10 composants. Il a pour fonction de structure : $$\phi(x) = [x_5(1-(1-x_1)(1-x_2))(1-(1-x_3)(1-x_4))+(1-x_5)(1-(1-x_1x_3)(1-x_2x_4))]x_6[1-(1-x_7x_{10})(1-x_8x_9)]$$
+On a joint en annexe le diagramme du système.
+
+```{r}
+phi <- function(x){
+  rep <- (x[5]*((1-(1-x[1])*(1-x[2]))*(1-(1-x[3])*(1-x[4])))+(1-x[5])*(1-(1-x[1]*x[3])*(1-x[2]*x[4])))*x[6]*(1-(1-x[7]*x[10])*(1-x[8]*x[9]))
+  return(rep)
+}
+```
+
+## Question 2
+
+Nous allons maintenant simuler l'état du système. On considérera que les composantes du système suivent des lois de Weibull de paramètre $\lambda = 5$ et $\beta = 5$.
+
+```{r}
+simu_etat_systeme <- function(lambda, beta, t){
+  X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
+  S <- rep(0,length(t))
+  u <- runif(10, 0, 1)
+  w <- rweibull(10, lambda, beta)
+  max <- max(t)
+  
+  for(i in 1:length(t)){
+    for(j in 1:10){
+      if(t[i] < w[j]){
+        X[i,j] <- 1
+      }
+    }
+    S[i] <- phi(X[i,])
+    if((S[i] == 0) && (S[i-1] == 1)){
+      max <- t[i]
+    }
+  }
+  return(list(etat = S, last = max))
+}
+```
+
+La trajectoire du système est :
+
+```{r}
+lambda <- 5
+beta <- 5
+t <- seq(0, 20, 0.1)
+
+set.seed(1)
+systeme1 <- simu_etat_systeme(lambda, beta, t)
+systeme2 <- simu_etat_systeme(lambda, beta, t)
+systeme3 <- simu_etat_systeme(lambda, beta, t)
+
+g <- ggplot() +
+  geom_line(aes(x = t, y = systeme1[[1]]), col = "blue") +
+  geom_line(aes(x = t, y = systeme2[[1]]), col = "red") +
+  geom_line(aes(x = t, y = systeme3[[1]]), col = "green") +
+  labs(x = "t",
+       y = "etat") +
+  
+
+g
+systeme1[[2]]
+systeme2[[2]]
+systeme3[[2]]
+"a"
+```
+
+En fixant les paramètres à $\lambda = 5$ et $\beta = 5$, le premier système a une durée de vie de t = 3,8, le deuxième de t = 4 et le troisième de t = 4.8.
+
+On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 1000 système.
+
+```{r}
+simu_T <- function(n){
+  n <- 100
+  simu <- rep(-1, n)
+  for(i in 1:n){
+    simu[i] <- simu_etat_systeme(lambda, beta, t)[[2]]
+  }
+  return(simu)
+}
+
+set.seed(1)
+n <- 1000
+simu <- simu_T(n)
+
+esperance <- mean(simu)
+
+confint <- c(mean(simu) - 1.96 * sd(simu)/sqrt(n), mean(simu) + 1.96 * sd(simu)/sqrt(n))
+
+esperance
+confint
+```
+
+On estime le temps de vie moyen de notre système à 4.078. Son intervalle de confiance associé à 95% est $[4,039;4,117]$.
