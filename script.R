@@ -32,7 +32,7 @@ phi_function <- function(loi, lambda, beta, t){
 
 ## Question 3
 
-# plot(phi_function(pweibull, 20, 2, 0:35), type = 'l')
+ plot(phi_function(pweibull, 20, 2, 0:35), type = 'l')
 
 g <- ggplot() +
   geom_line(aes(x = 1:35, y = phi_function(pweibull, 20, 2, 0:35))) +
@@ -501,3 +501,4 @@ for(i in 1:n){
   y[i] <- recompense(i)
 }
 plot(y)
+
