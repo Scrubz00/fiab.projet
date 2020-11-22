@@ -20,6 +20,10 @@ library(knitr)
 
 # Introduction
 
+À l'heure actuelle,la technologie est tellement développée, notamment dans les entreprises et les usines, qu'il est assez difficile de prévoir les risques. Ces risques peuvent survenir dans énormément de domaine comme par exemple le nucléaire, qui touche l'intégralité de la population. Les risques et les défaillances peuvent vite avoir un impact financier sur une industrie. Comment étudier les risque et aider les entreprises à les prévoir et maintenir leur économie ?
+Des méthodes mathématiques peuvent aider ces entreprises en modélisant des situations.
+Dans les parties suivantes, nous étudierons des situations à risque et nous ferons des simulations.   
+
 # Étude d'un système complexe 
 
 Nous allons dans cette première partie de projet, étudier un système composé de deux blocs en série. Nous étudierons le système dans son intégralité, mais aussi par blocs en les isolant, pour faire des comparaisons. Le but est d'estimer le temps de survie du système, de faire des trajectoires selon différents paramètres choisis. Pour cela, nous suivrons l’énoncé du TP1.
@@ -908,6 +912,13 @@ pander(inegalite_booleen(0.1))
 ```
 
 Ainsi, $\mu \geq \left(  \frac{1}{\mu_1}+\frac{1}{\mu_2}\right)^{-1}$ n'est pas vérifiée pour $\beta=0.1<1$
+
+# Conclusion
+
+Ce projet est intéressant dans le sens où on a mis en pratique des connaissances que nous avions aquerit theoriquement cette année.   
+On a pu visualiser comment évolue les risques, durée de survie d'un système en fonction de différents paramètres de la modélisation. 
+La partie informatique dans ce projet est assez importante, il faut implémenter beaucoup de fonctions. Nous avons remarquer que le coté financier  peut évoluer considérablement en fonction des risques de défaillance. Il est très important de trouver un bon compromis entre le cout de la main d'oeuvre pour réparer un composant et le gain que peut obtenir une indistrie sur une période fixé.
+
 
 # Annexe
 
