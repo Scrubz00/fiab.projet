@@ -16,15 +16,18 @@ library(magrittr)
 ```
 
 
-# Projet
+# Étude d'un système complexe avec possibilité de réparations de composants
 
-Dans cette partie nous allons traiter du projet 2. Il consiste à simuler un système complexe avec un composant réparable.
+Dans cette seconde partie, nous étusierons un autre système complexe, composé de 10 composants. Le but de cette partie sera de faire de nombreuse simulation et voir ce qui se passe dans le cas où un composant est réparable. Nous étudierons aussi l'impacte financier que des pannes pour une entreprise.
+Dans cette partie, nous éviterons de mettre les morceaux de code car nous en avons déja beaucoup mis dans la partie précédente et dans cette partie, les code sont plus ou moin simalaire
 
-## Question 1
+## Fonction de structure
 
 Le système que nous allons simuler a 10 composants. Voici le schéma du système :
 
-AJOUTER LE SCHEMA ICI
+\begin{center}
+\includegraphics{C:/Users/Camille/Desktop/fiab.projet/33}
+\end{center}
 
 Il a pour fonction de structure : $$\phi(x) = [x_5(1-(1-x_1)(1-x_2))(1-(1-x_3)(1-x_4))+(1-x_5)(1-(1-x_1x_3)(1-x_2x_4))]x_6[1-(1-x_7x_{10})(1-x_8x_9)]$$
 
@@ -35,7 +38,9 @@ phi <- function(x){
 }
 ```
 
-## Question 2
+## Trajectoire de l'état du système et espérence de la durée de vie
+
+### Trajectoire de l'état du système
 
 Nous allons maintenant simuler l'état du système. On considérera que les composantes du système suivent des lois de Weibull de paramètre $\lambda = 5$ et $\beta = 5$.
 
@@ -64,7 +69,8 @@ simu_etat_systeme <- function(lambda, beta, t){
 
 La trajectoire du système est :
 
-```{r}
+```{r,fig.height=3,fig.width=6, fig.align='center'}
+set.seed(568)
 lambda <- 5
 beta <- 5
 t <- seq(0, 20, 0.1)
@@ -80,7 +86,7 @@ df1 <- data.frame(systeme = c(systeme1[[1]], systeme2[[1]], systeme3[[1]]),
 g1 <- df1 %>% 
   ggplot() +
   geom_line(aes(x = t, y = systeme, linetype = num_systeme)) +
-  labs(title = "simulation état du système",
+  labs(title = "                    Simulation état du système",
        x = "temps",
        y = "état") +
   scale_y_continuous(breaks = c(0, 1), minor_breaks = c(0,1)) +
@@ -92,6 +98,8 @@ g1
 En fixant les paramètres à $\lambda = 5$ et $\beta = 5$, le premier système a une durée de vie de t = 3,8, le deuxième de t = 4 et le troisième de t = 4.8.
 
 On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 10000 systèmes.
+
+### Estimation de l'espérance de la durée de vie et intervalle de confiance
 
 ```{r}
 simu_T <- function(n){
@@ -118,18 +126,23 @@ On estime le temps de vie moyen de notre système à 3,933. Son intervalle de co
 
 On va maintenant représenter notre estimation de l'espérance de la durée de vie de notre système en fonction du nombre de simulations choisies.
 
-```{r}
+```{r,fig.height=3.5,fig.width=5, fig.align='center'}
 nb.simu <- matrix(1:n, n, 1)
 esp.cumul <- cumsum(simu)/nb.simu
 df.si <- data.frame(nb.simu, esp.cumul)
 ggplot(df.si,aes(x=nb.simu, y=esp.cumul))+
  geom_line()+
- xlab("Nombre simulations")+
- ylab("Moyenne des estimations")
+  labs(title = "Moyenne des estimateurs en fonction du nombre de
+                                  simulations",
+       x = "Nombre simulations",
+       y = "Moyenne des estimations")
+
 ```
 On voit sur ce graphe que le temps de vie moyen converge entre 3.9 et 4. Notre estimation a l'air de se stabiliser à partir de 3000 simulations.
 
-## Question 3
+## Réparation du système
+
+### Trajectoire de l'état du système avec réparation
 
 Le composant critique que nous avons choisis est le composant $x_6$. En effet, il est un composant critique car il est en série avec tout le reste du système et donc une panne de ce composant entraine forcément une panne du système.
 Nous allons maintenant implémenter le fait que ce composant soit réparable. On part du principe qu'un technicien vient tous les intervalles de temps  $\delta$ pour le réparer : si le composant est en panne, il le répare, sinon il ne fait rien. Dans les deux cas, le déplacement du technicien implique un coût.
@@ -194,9 +207,9 @@ phi3 <- function(a, n, lambda, beta,inter){
 }
 ```
 
-Nous allons tracer quelques trajectoire de l'état notre nouveau système réparable. Cette fois-ci, on fixe $\lambda = 15$ et $\beta = 3$.
+Nous allons tracer quelques trajectoires de l'état de notre nouveau système réparable. Cette fois-ci, on fixe $\lambda = 15$ et $\beta = 3$.
 
-```{r}
+```{r,fig.height=3.5,fig.width=6, fig.align='center'}
 a <- 20
 n <- 20
 lambda <- 15
@@ -211,7 +224,7 @@ df2 <- data.frame(systeme = c(phi3(a,n,lambda,beta,inter), phi3(a,n,lambda,beta,
 g2 <- df2 %>% 
   ggplot() +
   geom_line(aes(x = t, y = systeme, linetype = num_systeme)) +
-  labs(title = "état du système réparable",
+  labs(title = "                  État du système réparable",
        x = "temps",
        y = "état") +
   scale_y_continuous(breaks = c(0, 1), minor_breaks = c(0,1)) +
@@ -228,6 +241,8 @@ Nous allons maintenant regarder avec quel intervalle de temps $\delta$ il faut d
 Le coefficients $a$ correspond au gain du système associé au temps, et le coefficient $C$ correspond au coût d'intervention du technicien. $N$ est le nombre moyen d'intervention du technicien avant l'instant T de panne du système.
 
 On implémente cette fonction, puis on cherche à la maximiser par rapport à $\delta$. Comme précédemment les valeurs de $\mathbb{E}(T)$ et $\mathbb{E}(N)$ sont estimées par la loi des grands nombres.
+
+### Fonction de récompense
 
 ```{r}
 # Esperance de T
@@ -335,7 +350,7 @@ solution
 Lorsqu'on cherche à maximiser la fonction de récompense, on obtient qu'il faut que le technicien intervienne tous les 78 temps pour avoir un résultat optimal, et ce pour une récompense de 2807.
 Lorsque qu'on regarde l'évolution de la fonction recompense en fonction de $\delta$, on obtient :
 
-```{r}
+```{r,fig.height=3.5,fig.width=5, fig.align='center'}
 a_val <- 50
 n_val <- 50
 lambda_val <- 15
@@ -356,29 +371,30 @@ df3 <- data.frame(value,
 g3 <- df3 %>% 
   ggplot() +
   geom_line(aes(x = t, y = value)) +
-  labs(title = "fonction de récompense",
+  labs(title = "                      Fonction de récompense",
        x = "delta",
        y = "récompense")
 g3
 ```
 Ici on se limite à $\delta$ allant de 1 à 50 pour limiter le temps de compilation. On voit sur le graphe que la fonction optimisation a une allure croissante : plus l'intervalle de temps entre deux intervention du technicien est élevée (donc moins on demande au technicien d'intervenir), plus la récompense est élevée. On en déduit donc que l'intervention du technicien n'est pas rentable en vue de notre système.
 
-# Code
 
+# Annexe
 
-library(ggplot2)
-library(zoo)
-library(magrittr)
+## projet
 
-## Question 1
+### question 1
 
+```{r,cache = TRUE,echo=TRUE}
 phi <- function(x){
   rep <- (x[5]*((1-(1-x[1])*(1-x[2]))*(1-(1-x[3])*(1-x[4])))+(1-x[5])*(1-(1-x[1]*x[3])*(1-x[2]*x[4])))*x[6]*(1-(1-x[7]*x[10])*(1-x[8]*x[9]))
   return(rep)
 }
+```
 
 ## Question 2
 
+```{r,cache = TRUE,echo=TRUE}
 simu_etat_systeme <- function(lambda, beta, t){
   X <- matrix(data = rep(0, 10*length(t)), ncol = 10, nrow = length(t))
   S <- rep(0,length(t))
@@ -399,7 +415,10 @@ simu_etat_systeme <- function(lambda, beta, t){
   }
   return(list(etat = S, last = max))
 }
+```
 
+```{r,cache = TRUE,echo=TRUE, fig.keep='none'}
+set.seed(568)
 lambda <- 5
 beta <- 5
 t <- seq(0, 20, 0.1)
@@ -414,7 +433,7 @@ df1 <- data.frame(systeme = c(systeme1[[1]], systeme2[[1]], systeme3[[1]]),
 
 g1 <- df1 %>% 
   ggplot() +
-  geom_line(aes(x = t, y = systeme, col = num_systeme)) +
+  geom_line(aes(x = t, y = systeme, linetype = num_systeme)) +
   labs(title = "simulation état du système",
        x = "temps",
        y = "état") +
@@ -422,7 +441,9 @@ g1 <- df1 %>%
   scale_x_continuous(breaks = seq(0, 20, 5), minor_breaks = seq(0, 20, 1)) +
   facet_grid(num_systeme ~ .)
 g1
+```
 
+```{r,cache = TRUE,echo=TRUE,results='hide'}
 simu_T <- function(n){
   simu <- rep(-1, n)
   for(i in 1:n){
@@ -441,7 +462,10 @@ confint <- c(mean(simu) - 1.96 * sd(simu)/sqrt(n), mean(simu) + 1.96 * sd(simu)/
 
 esperance
 confint
+```
 
+
+```{r,cache = TRUE,echo=TRUE, fig.keep='none'}
 nb.simu <- matrix(1:n, n, 1)
 esp.cumul <- cumsum(simu)/nb.simu
 df.si <- data.frame(nb.simu, esp.cumul)
@@ -449,13 +473,13 @@ ggplot(df.si,aes(x=nb.simu, y=esp.cumul))+
  geom_line()+
  xlab("Nombre simulations")+
  ylab("Moyenne des estimations")
- 
- 
+```
+
+
 ## Question 3
 
-### a
- 
- fonction_interval=function(n,inter,i){
+```{r,cache = TRUE,echo=TRUE}
+fonction_interval=function(n,inter,i){
   t=NULL
   d=NULL
   for (v in seq(1,n,inter)) {
@@ -512,7 +536,10 @@ phi3 <- function(a, n, lambda, beta,inter){
   }
   return(y)
 }
+```
 
+
+```{r,cache = TRUE,echo=TRUE, fig.keep='none',results='hide'}
 a <- 20
 n <- 20
 lambda <- 15
@@ -526,7 +553,7 @@ df2 <- data.frame(systeme = c(phi3(a,n,lambda,beta,inter), phi3(a,n,lambda,beta,
 
 g2 <- df2 %>% 
   ggplot() +
-  geom_line(aes(x = t, y = systeme, col = num_systeme)) +
+  geom_line(aes(x = t, y = systeme, linetype = num_systeme)) +
   labs(title = "état du système réparable",
        x = "temps",
        y = "état") +
@@ -534,11 +561,10 @@ g2 <- df2 %>%
   scale_x_continuous(breaks = seq(0, 20, 5), minor_breaks = seq(0, 20, 1)) +
   facet_grid(num_systeme ~ .)
 g2
+```
 
-###  b
-
-Espérance de T :
-
+```{r,cache = TRUE,echo=TRUE}
+# Esperance de T
 tp_i_de_panne <- function(a, n, lambda, beta,inter){
   y=NULL
   d=0
@@ -572,9 +598,10 @@ E_T=function(a, n, lambda, beta,inter,nbtot){
   moyenne=(1/nbtot)*sum(t)
   return(moyenne)
 }
+```
 
-Espérance de N : nombre d'interventions
-
+```{r,cache = TRUE,echo=TRUE, fig.keep='none'}
+# Esperance de N
 nb_intervention <- function(a, n, lambda, beta,inter){
   t <- seq(0, a,length.out =n)
   y <- rep(0,n)
@@ -617,9 +644,10 @@ moyenne_intervention=function(a, n, lambda, beta,inter,nbtot){
   moyenne=(1/nbtot)*sum(nb_realisation_intervention(a, n, lambda, beta,inter,nbtot))
   return(moyenne)
 }
+```
 
-Optimisation de la fonction de récompense :
-
+```{r,cache = TRUE,echo=TRUE}
+# Fonction récompense
 a_val <- 200
 n_val <- 200
 lambda_val <- 15
@@ -637,7 +665,10 @@ recompense<-function(inter, a=a_val, n=n_val, lambda=lambda_val, beta=beta_val,n
 }
 solution <- optimize(recompense,c(0, 200),maximum = TRUE)
 solution
+```
 
+
+```{r,cache = TRUE,echo=TRUE, fig.keep='none'}
 a_val <- 50
 n_val <- 50
 lambda_val <- 15
@@ -662,3 +693,5 @@ g3 <- df3 %>%
        x = "delta",
        y = "récompense")
 g3
+```
+
