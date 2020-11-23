@@ -1,0 +1,6 @@
+base
+magrittr
+dplyr
+ggplot2
+pander
+knitr

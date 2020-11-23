@@ -36,9 +36,13 @@ Le premier bloc en série du système est représenté par le schéma ci-dessous
 
 \begin{center}
 \includegraphics{C:/Users/Camille/Desktop/fiab.projet/b1}
-\end{center}
+\end{center}  
 
-Nous allons commencer par implémenter sa fonction de structure qui nous renverra l'état du block 1 :
+Sa fonction de structure est la suivante : 
+
+$\phi(x)=x_3[1-(1-x_1)(1-x_2)][1-(1-x_4)(1-x_5)]+(1-x_3)[1-(1-x_1x_4)(1-x_2x_5)]$
+
+Nous allonsl'implémenter de la manière suivante, elle nous renverra l'état du block 1 :
 
 
 ```{r block_1}
@@ -85,7 +89,11 @@ Le deuxième block en série du système est représenté par le schéma ci-dess
 \includegraphics{C:/Users/Camille/Desktop/fiab.projet/b2}
 \end{center}
 
-Nous allons implémenter sa fonction de structure avec le code ci-dessous :
+Sa fonction de structure est la suivante : 
+
+$\phi(x)=[1-(1-x_8)(1-x_9)(1-x_6x_7)]$
+
+Nous allonsl'implémenter de la manière suivante, elle nous renverra l'état du block 2 :
 
 ```{r }
 phi_2 <- function(x){
@@ -128,8 +136,12 @@ Le système, dans son intégralité, est représenté par le schéma ci-dessous 
 \includegraphics{C:/Users/Camille/Desktop/fiab.projet/s}
 \end{center}
 
-Sa fonction de structure est implémentée par le code suivant :
+Sa fonction de structure est la suivante : 
 
+$\phi(x)=[1-(1-x_8)(1-x_9)(1-x_6x_7)]*$  
+\hspace*{1.8cm}$\left\lbrace x_3[1-(1-x_1)(1-x_2)][1-(1-x_4)(1-x_5)]+(1-x_3)[1-(1-x_1x_4)(1-x_2x_5)]\right\rbrace$
+
+Nous allonsl'implémenter de la manière suivante, elle nous renverra l'état du block système :
 ```{r }
 phi <- function(x){
   rep <- ((x[3]*(1-(1-x[1])*(1-x[2]))*(1-(1-x[4])*(1-x[5])))+(1-x[3])*
@@ -1062,7 +1074,7 @@ g
 
 ## Estimation de la durée de vie 
  
-```{r}
+```{r,cache=TRUE}
 phi_t_b1 <- function(a, n, lambda, beta){
   t <- seq(0, a,length.out =n)
   y <- rep(0,n)
@@ -1083,7 +1095,7 @@ phi_t_b1 <- function(a, n, lambda, beta){
 ```
 
 
-```{r}
+```{r,cache=TRUE}
 duree_vie_b1 <- function(a, n, lambda, beta){
   y<-phi_t_b1(a, n, lambda, beta)
   d<-0
@@ -1102,7 +1114,7 @@ duree_vie_b1 <- function(a, n, lambda, beta){
 ```
 
 
-```{r}
+```{r,cache=TRUE}
 phi_t_b2 <- function(a, n, lambda, beta){
   t <- seq(0, a,length.out =n)
   y <- rep(0,n)
@@ -1122,7 +1134,7 @@ phi_t_b2 <- function(a, n, lambda, beta){
 
 ```
 
-```{r}
+```{r,cache=TRUE}
 duree_vie_b2 <- function(a, n, lambda, beta){
   y<-phi_t_b2(a, n, lambda, beta)
   d<-0
@@ -1143,7 +1155,7 @@ duree_vie_b2 <- function(a, n, lambda, beta){
 
 ### Pour le block 1
 
-```{r,results='hide'}
+```{r,results='hide',cache=TRUE}
 n_realisation_T_b1<-function(a, n, lambda, beta,ntot){
   vect=NULL
   for(i in 1:ntot){
@@ -1161,7 +1173,7 @@ mu_1(40,100,5,15,100)
 
 ### Pour le block 2
 
-```{r,results='hide'}
+```{r,results='hide',cache=TRUE}
 n_realisation_T_b2<-function(a, n, lambda, beta,ntot){
   vect=NULL
   for(i in 1:ntot){
@@ -1179,7 +1191,7 @@ mu_2=function(a, n, lambda, beta,ntot){
 ## Inégalité entre les espérences 
 
 
-```{r,warning=FALSE,results='hide',fig.keep='none'}
+```{r,warning=FALSE,results='hide',fig.keep='none',cache=TRUE}
 g <- ggplot() +
   aes(x = 1:100, y = inegalite_booleen(1:100)) +
   geom_point()+
@@ -1192,7 +1204,7 @@ g
 
 
 
-```{r,warning=FALSE,results='hide',fig.keep='none'}
+```{r,warning=FALSE,results='hide',fig.keep='none',cache=TRUE}
 g <- ggplot() +
   aes(x = 1:100, y = inegalite(1:100)) +
   geom_point()+
