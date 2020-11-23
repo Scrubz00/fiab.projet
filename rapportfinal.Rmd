@@ -23,7 +23,7 @@ library(knitr)
 
 # Introduction
 
-À l'heure actuelle,la technologie est tellement développée, notamment dans les entreprises et les usines, qu'il est assez difficile de prévoir les risques. Ces risques peuvent survenir dans énormément de domaine comme par exemple le nucléaire, qui touche l'intégralité de la population. Les risques et les défaillances peuvent vite avoir un impact financier sur une industrie. Comment étudier les risque et aider les entreprises à les prévoir et maintenir leur économie ?
+À l'heure actuelle, la technologie est tellement développée, notamment dans les entreprises et les usines, qu'il est assez difficile de prévoir les risques. Ces risques peuvent survenir dans énormément de domaines comme par exemple le nucléaire, qui touche l'intégralité de la population. Les risques et les défaillances peuvent vite avoir un impact financier sur une industrie. Comment étudier les risques et aider les entreprises à les prévoir et maintenir leur économie ?
 Des méthodes mathématiques peuvent aider ces entreprises en modélisant des situations.
 Dans les parties suivantes, nous étudierons des situations à risque et nous ferons des simulations.   
 
@@ -47,7 +47,7 @@ Sa fonction de structure est la suivante :
 
 $\phi(x)=x_3[1-(1-x_1)(1-x_2)][1-(1-x_4)(1-x_5)]+(1-x_3)[1-(1-x_1x_4)(1-x_2x_5)]$
 
-Nous allonsl'implémenter de la manière suivante, elle nous renverra l'état du block 1 :
+Nous allons l'implémenter de la manière suivante, elle nous renverra l'état du bloc 1 :
 
 
 ```{r block_1}
@@ -98,7 +98,7 @@ Sa fonction de structure est la suivante :
 
 $\phi(x)=[1-(1-x_8)(1-x_9)(1-x_6x_7)]$
 
-Nous allonsl'implémenter de la manière suivante, elle nous renverra l'état du block 2 :
+Nous allons l'implémenter de la manière suivante, elle nous renverra l'état du bloc 2 :
 
 ```{r }
 phi_2 <- function(x){
@@ -146,7 +146,7 @@ Sa fonction de structure est la suivante :
 $\phi(x)=[1-(1-x_8)(1-x_9)(1-x_6x_7)]*$  
 \hspace*{1.8cm}$\left\lbrace x_3[1-(1-x_1)(1-x_2)][1-(1-x_4)(1-x_5)]+(1-x_3)[1-(1-x_1x_4)(1-x_2x_5)]\right\rbrace$
 
-Nous allonsl'implémenter de la manière suivante, elle nous renverra l'état du block système :
+Nous allons l'implémenter de la manière suivante, elle nous renverra l'état du bloc système :
 ```{r }
 phi <- function(x){
   rep <- ((x[3]*(1-(1-x[1])*(1-x[2]))*(1-(1-x[4])*(1-x[5])))+(1-x[3])*
@@ -401,7 +401,7 @@ La courbe en trait plein représente la deuxième simulation.
 
 La courbe en pointillés représente la première simulation.  
 
-La courbe en trait-pointillé représente la troisième simulation.  
+La courbe en traits-pointillés représente la troisième simulation.  
 
 On observe que plus le paramètre $\beta$ est grand, plus la courbe augmente rapidemment.
 
@@ -442,7 +442,7 @@ La courbe en trait plein représente la troisième simulation.
 
 La courbe en pointillés représente la première simulation.  
 
-La courbe en trait-pointillé représente la deuxième simulation.  
+La courbe en traits-pointillés représente la deuxième simulation.  
 
 
 On observe que la courbe où $\beta=0.1$ commence avec une valeur élevé mais décroit très vite à 0. Les autres courbes stagnent aux alentours de 0.5
@@ -507,7 +507,7 @@ Pour une deuxième simulation, on prend :
 \end{itemize}
 
 La première simulation est représentée par la courbe en trait plein.
-La deuxième simulation est représentée par la courbe en pointillé.
+La deuxième simulation est représentée par la courbe en pointillés.
 
 ```{r,fig.width=4,fig.height=3,fig.align='center',echo=FALSE,warning=FALSE}
 set.seed(1234)
@@ -515,14 +515,14 @@ g <- ggplot() +
   geom_line(aes(x = 1:20, y = phi_t(4,20,2,1))) +
   geom_line(aes(x = 1:20, y = phi_t(4,20,3,6)),linetype = "dashed") +
   labs(title="Courbe de la fonction de structure sur 
-       l'intervalle de temps donnée",
+       l'intervalle de temps donné",
        x = "Temps",
        y = "fonction de structure")
 g
 ```
 
-Pour la première simulation, on observe que a $t=8$ le système tombe en panne.  
-Pour la première simulation, on observe que a $t=17$ le système tombe en panne.  
+Pour la première simulation, on observe que à $t=8$ le système tombe en panne.  
+Pour la première simulation, on observe que à $t=17$ le système tombe en panne.  
 
 
 
@@ -753,9 +753,9 @@ mu_1(40,100,5,15,100)
 
 Nous cherchons à estimer $\mu_1=\mathbb{E}(T_1)$.
 
-On implémente une fonction nommée $n\_realisation\_T\_b1$ qui réalise plusieurs fois la fonction qui calcule la durée de vie du bloc 1 et d'enregistrer toutes les réalisations dans un vecteur.  
+On implémente une fonction nommée $n\_realisation\_T\_b1$ qui réalise plusieurs fois la fonction qui calcule la durée de vie du bloc 1 et qui enregistre toutes les réalisations dans un vecteur.  
 
-On implémente aussi une fonction nomée $mu\_1$ qui calcule la moyenne de toute ces réalisations.
+On implémente aussi une fonction nommée $mu\_1$ qui calcule la moyenne de toute ces réalisations.
 
 Ces fonctions sont en annexe car elle sont assez similaire à celle du système.  
 
@@ -771,7 +771,7 @@ pander(mu_1(40,100,5,15,100))
 
 ```
 
-On considére que $(T_{1_i})_{i=1}^n$ est une variable aléatoires indépendante et identiquement distribuée. 
+On considére que $(T_{1_i})_{i=1}^n$ est une variable aléatoire indépendante et identiquement distribuée. 
 
 D'après la loi forte des grands nombres, $\frac{1}{100}\sum_{1=1}^{100}T_{1_i}$ converge presque sûrement vers la constante $\mathbb{E}(T_{1_1})$
 
@@ -796,7 +796,7 @@ mu_2=function(a, n, lambda, beta,ntot){
 
 Nous cherchons à estimer $\mu_2=\mathbb{E}(T_2)$.
 
-On implémente une fonction nommée $n\_realisation\_T\_b2$ qui réalise plusieurs fois la fonction qui calcule la durée de vie du bloc 1 et d'enregistrer toutes les réalisations dans un vecteur.  
+On implémente une fonction nommée $n\_realisation\_T\_b2$ qui réalise plusieurs fois la fonction qui calcule la durée de vie du bloc 1 et qui enregistre toutes les réalisations dans un vecteur.  
 
 On implémente aussi une fonction nommée $mu\_2$ qui calcule la moyenne de toute ces réalisations.
 
@@ -907,8 +907,7 @@ Ainsi, pour $\beta$ qui varie entre 0 et 100, on obtient :
 g <- ggplot() +
   aes(x = 1:100, y = inegalite(1:100)) +
   geom_point()+
-  labs(title="Fonction renvoyant si l'égalité est
-        vérifié",
+  labs(title="Fonction renvoyant la différence",
        x = "beta",
        y = "inegalite_booleen")
 g
@@ -936,15 +935,14 @@ La disponibilité moyenne sur un intervalle de temps donné peut être évaluée
 
 $$\frac{MTBF}{MTTR+MTBF}$$
 
-où MTBF est la moyenne des temps de bon fonctionnement entre défaillances consécutives et 
-MTTR  ou encore Moyenne des Temps Techniques de Réparation.
+où MTBF est la moyenne des temps de bon fonctionnement entre défaillances consécutives et MTTR ou encore Moyenne des Temps Techniques de Réparation.
 
 \newpage
 
 # Étude d'un système complexe avec possibilité de réparations de composants
 
-Dans cette seconde partie, nous étudierons un autre système complexe, composé de 10 composants. Le but de cette partie sera de faire de nombreuse simulation et voir ce qui se passe dans le cas où un composant est réparable. Nous étudierons aussi l'impacte financier que des pannes pour une entreprise.
-Dans cette partie, nous éviterons de mettre les morceaux de code car nous en avons déja beaucoup mis dans la partie précédente et dans cette partie, les code sont plus ou moin simalaire
+Dans cette seconde partie, nous étudierons un autre système complexe, composé de 10 composants. Le but de cette partie sera de faire de nombreuse simulation et voir ce qui se passe dans le cas où un composant est réparable. Nous étudierons aussi l'impacte financier des pannes pour une entreprise.
+Dans cette partie, nous éviterons de mettre les morceaux de code car nous en avons déja beaucoup mis dans la partie précédente et dans cette partie, les code sont plus ou moins similaires.
 
 ## Fonction de structure
 
@@ -967,7 +965,7 @@ phi <- function(x){
 
 ### Trajectoire de l'état du système
 
-Nous allons maintenant simuler l'état du système. On considérera que les composantes du système suivent des lois de Weibull de paramètre $\lambda = 5$ et $\beta = 5$.
+Nous allons maintenant simuler l'état du système. On considérera que les composants du système suivent des lois de Weibull de paramètre $\lambda = 5$ et $\beta = 5$.
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE}
 simu_etat_systeme <- function(lambda, beta, t){
@@ -1022,7 +1020,7 @@ g1
 
 En fixant les paramètres à $\lambda = 5$ et $\beta = 5$, le premier système a une durée de vie de t = 3,8, le deuxième de t = 4 et le troisième de t = 4.8.
 
-On va maintenant utiliser la loi des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 10000 systèmes.
+On va maintenant utiliser la loi forte des grands nombres pour estimer l'espérance de la durée de vie de notre système. On simule le temps de vie de moyen sur 10000 systèmes.
 
 ### Estimation de l'espérance de la durée de vie et intervalle de confiance
 
@@ -1080,7 +1078,7 @@ On voit sur ce graphe que le temps de vie moyen converge entre 3.9 et 4. Notre e
 ### Trajectoire de l'état du système avec réparation
 
 Le composant critique que nous avons choisis est le composant $x_6$. En effet, il est un composant critique car il est en série avec tout le reste du système et donc une panne de ce composant entraine forcément une panne du système.
-Nous allons maintenant implémenter le fait que ce composant soit réparable. On part du principe qu'un technicien vient tous les intervalles de temps  $\delta$ pour le réparer : si le composant est en panne, il le répare, sinon il ne fait rien. Dans les deux cas, le déplacement du technicien implique un coût.
+Nous allons maintenant implémenter le fait que ce composant soit réparable. On part du principe qu'un technicien vient tous les intervalles de temps $\delta$ pour le réparer : si le composant est en panne, il le répare, sinon il ne fait rien. Dans les deux cas, le déplacement du technicien implique un coût.
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE}
 fonction_interval=function(n,inter,i){
@@ -1236,7 +1234,7 @@ nb_intervention <- function(a, n, lambda, beta,inter){
     if(t[i-d] < (lambda*(-log(u[6]))^(1/beta))){
       x[i,6] <- 1
     }
-    if(fonction_interval(n,inter,i)==1){
+    if((fonction_interval(n,inter,i)==1) && (phi(x[i,]) == 1)){
       intervention <- intervention + 1
       if(x[i,6] == 0){
         d <- i
@@ -1260,7 +1258,7 @@ moyenne_intervention=function(a, n, lambda, beta,inter,nbtot){
   return(moyenne)
 }
 ```
-Pour la maximisation, on va fixer reprendre les paramètres utilisés précédemment : on fixe $\lambda = 15$, $\beta = 3$. Pour les coefficients de gain associé au temps et de cout d'intervention du technicien, on les fixe arbitrairement : on fixe $a = 250$ et $C = 100$.
+Pour la maximisation, on va reprendre les paramètres utilisés précédemment : on fixe $\lambda = 15$, $\beta = 3$. Pour les coefficients de gain associé au temps et de cout d'intervention du technicien, on les fixe arbitrairement : on fixe $a = 250$ et $C = 100$.
 ```{r,echo = FALSE, message = FALSE, warning = FALSE}
 # Fonction récompense
 a_val <- 200
@@ -1311,13 +1309,13 @@ g3 <- df3 %>%
        y = "récompense")
 g3
 ```
-Ici on se limite à $\delta$ allant de 1 à 50 pour limiter le temps de compilation. On voit sur le graphe que la fonction optimisation a une allure croissante : plus l'intervalle de temps entre deux intervention du technicien est élevée (donc moins on demande au technicien d'intervenir), plus la récompense est élevée. On en déduit donc que l'intervention du technicien n'est pas rentable en vue de notre système.
+Ici on se limite à $\delta$ allant de 1 à 50 pour limiter le temps de compilation. On voit sur le graphe que la fonction récompense a une allure croissante : plus l'intervalle de temps entre deux interventions du technicien est élevé (donc moins on demande au technicien d'intervenir), plus la récompense est élevée. On en déduit donc que l'intervention du technicien n'est pas rentable en vue de notre système.
 
 \newpage
 
 # Conclusion
 
-Ce projet est intéressant dans le sens où on a mis en pratique des connaissances que nous avions aquis theoriquement cette année.   
+Ce projet est intéressant dans le sens où on a mis en pratique des connaissances que nous avions aquis théoriquement cette année.   
 On a pu visualiser comment évoluent les risques, durée de survie d'un système en fonction de différents paramètres de la modélisation. 
 La partie informatique dans ce projet est assez importante, il faut implémenter beaucoup de fonctions. Nous avons remarquer que le coté financier peut évoluer considérablement en fonction des risques de défaillance. Il est très important de trouver un bon compromis entre le cout de la main d'oeuvre pour réparer un composant et le gain que peut obtenir une industrie sur une période fixée.
 
