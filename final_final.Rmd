@@ -1,10 +1,51 @@
 ---
-title: "final"
 fontsize: 12pt
-author: "camille younes"
-date: "23/11/2020"
-output: pdf_document
+output:
+  pdf_document: 
+      latex_engine: pdflatex
+  html_document: default
+   \ usepackage { graphics }
+
 ---
+![](D:/Master_1_mes_cours_et_project/Simulation_R/simulation/logo.png)
+
+\noindent \hrulefill
+ \vspace*{7mm}  
+
+\begin{center}\begin{Huge}\textbf{Projet de fiabilité}\end{Huge} \end{center}
+\vspace*{5mm}
+\begin{center}\begin{Large}\textbf{Étude de systèmes complexes}\end{Large} \end{center}
+\vspace*{5mm}
+
+   \begin{center}\begin{Large}MASTER 2 : Mathématique appliquée, parcours modélisation statistique\end{Large}\end{center}
+ \vspace*{5mm}  
+ 
+ \begin{center}\begin{Large}
+    Fiabilité
+  \vspace*{3mm}  
+  
+  par
+  
+\vspace*{3mm}  
+
+\textbf{Younes Chahma et Camille Giampiccolo}
+\end{Large}\end{center}
+\begin{Large}
+\vspace*{5mm}  
+
+\begin{center}Encadré par \end{center} 
+\end{Large}
+\vspace*{5mm} 
+
+\begin{center}\begin{Large}\textbf{Professeur Célestin C. Kokonendji }\end{Large} \end{center}
+\vspace*{5mm}
+\begin{center}24 novembre 2020\end{center}
+
+\noindent \hrulefill 
+
+\begin{center}
+\includegraphics{C:/Users/Camille/Desktop/fiab.projet/fiab}
+\end{center}
 
 \newpage
 \tableofcontents
@@ -566,8 +607,8 @@ set.seed(1235)
 pander(duree_vie_sys(40,100,5,15))
 ```
 
-Le système vit de $t=0$ à $t=13$  
-Donc il vit 4.8484848 jours. (13 eme valeur de l'intervalle donnée)
+Le système vit de $t=0$ à $t=12$  
+Donc il vit 4.4444444 jours. (12 eme valeur de l'intervalle donnée)
 
 
 ### Estimation de la durée de vie T1 du bloc 1
@@ -687,7 +728,7 @@ pander(duree_vie_b2(40,100,5,15))
 ```
 
 Le système vit de $t=0$ à $t=14$  
-Donc il vit 4.4444444 jours. (12 eme valeur de l'intervalle donnée)
+Donc il vit 5.2525253 jours. (14 eme valeur de l'intervalle donnée)
 
 ## Estimation des espérences des durées de vie
 
@@ -718,7 +759,7 @@ mu=function(a, n, lambda, beta,ntot){
 
 Ainsi, pour 100 réalisations et pour $\lambda=5$, $\beta=15$ et un intervalle composé de 100 valeurs equidistantes entre 0 et 40, on obtient 
 
-```{r}
+```{r,echo=TRUE,results='hide',message=FALSE,warning=FALSE}
 mu(40,100,5,15,100)
 ```
 
@@ -1168,9 +1209,17 @@ g2 <- df2 %>%
 g2
 ```
 
-Pour la première trajectoire, on voit que le système tombe en panne au temps t = 10 et il n'y a pas de réparation ensuite, du moins pas de réparation qui remette le système en marche.
-Pour la deuxième trajectoire, on voit que le système tombe une première fois en panne au temps t = 7, puis il y a réparation au temps t = 9, puis le système retombe en panne au temps t = 13. On peut donc dire que la réparation du composant critique a permis au système de tenir un peu plus longtemps que prévu (il a gagné t = 4 de durée de vie).
-Pour le troisième système, on remarque qu'il tombe une première fois en panne et qu'il est réparé en même temps que le système 2 (aux temps t = 7 puis t = 9), seulement ce système met plus de temps que le précédent à retomber en panne (il retombe en panne à t = 16 contre t = 13 pour le précédent). Dans ce système, le fait que le composant critique soit réparable a doublé la durée de vie de notre système (il passe d'une durée de vie de 6 à 12).
+\begin{itemize}
+
+\item Pour la première trajectoire, on voit que le système tombe en panne au temps t = 10 et il n'y a pas de réparation ensuite, du moins pas de réparation qui remette le système en marche.
+
+\item Pour la deuxième trajectoire, on voit que le système tombe une première fois en panne au temps t = 7, puis il y a réparation au temps t = 9, puis le système retombe en panne au temps t = 13. On peut donc dire que la réparation du composant critique a permis au système de tenir un peu plus longtemps que prévu (il a gagné t = 4 de durée de vie).
+
+\item Pour le troisième système, on remarque qu'il tombe une première fois en panne et qu'il est réparé en même temps que le système 2 (aux temps t = 7 puis t = 9), seulement ce système met plus de temps que le précédent à retomber en panne (il retombe en panne à t = 16 contre t = 13 pour le précédent). Dans ce système, le fait que le composant critique soit réparable a doublé la durée de vie de notre système (il passe d'une durée de vie de 6 à 12).
+
+\end{itemize}
+
+
 
 Nous allons maintenant regarder avec quel intervalle de temps $\delta$ il faut demander au technicien d'intervenir pour que le système soit le plus rentable possible. La fonction de récompense est la suivante : $$R(\delta) = a \mathbb{E}(T) - C \mathbb{E}(N) $$.
 Le coefficients $a$ correspond au gain du système associé au temps, et le coefficient $C$ correspond au coût d'intervention du technicien. $N$ est le nombre moyen d'intervention du technicien avant l'instant T de panne du système.
@@ -1318,7 +1367,7 @@ Ici on se limite à $\delta$ allant de 1 à 50 pour limiter le temps de compilat
 # Conclusion
 
 Ce projet est intéressant dans le sens où on a mis en pratique des connaissances que nous avions aquis théoriquement cette année.   
-On a pu visualiser comment évoluent les risques, durée de survie d'un système en fonction de différents paramètres de la modélisation. 
+On a pu visualiser comment évoluent les risques, les durées de vie d'un système en fonction de différents paramètres de la modélisation. 
 La partie informatique dans ce projet est assez importante, il faut implémenter beaucoup de fonctions. Nous avons remarquer que le coté financier peut évoluer considérablement en fonction des risques de défaillance. Il est très important de trouver un bon compromis entre le cout de la main d'oeuvre pour réparer un composant et le gain que peut obtenir une industrie sur une période fixée.
 
 \newpage
